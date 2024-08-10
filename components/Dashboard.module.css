@@ -1,0 +1,75 @@
+/* styles/dashboard.module.css */
+
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #D1D1D1;
+}
+
+.content {
+  margin-top: 30px; /* Espaciado superior */
+  margin-right: 20px; /* Espaciado derecho */
+  margin-bottom: 45px;
+  flex-grow: 1;
+  background-color: #d3d3d3;
+  padding: 20px;
+  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total del contenedor */
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribuye el espacio entre el searchBar y los íconos */
+  margin-bottom: 20px;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background-color: #f3f3f3;
+  border-radius: 10px;
+  flex-grow: 1;
+  margin-top: 10px;
+  padding: 5px; /* Ajusta el padding para hacer la barra más pequeña */
+  margin-left: 120px;
+  margin-right: 10px; /* Espacio entre el searchBar y los íconos */
+  max-width: 1000px;/* Ajusta el ancho del searchBar */
+}
+
+.searchBar input {
+  flex-grow: 1;
+  padding: 5px;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+
+  gap: 15px;
+}
+
+.mainContent {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  height: calc(100vh - 90px); /* Ajusta la altura según el espacio disponible */
+}
+.notificationIcon {
+  position: relative;
+}
+
+.notificationIcon::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: green;
+  border-radius: 50%;
+}
+
+
+  
