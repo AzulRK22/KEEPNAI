@@ -1,17 +1,36 @@
-import React from "react";
-import {
-  Container,
-  Box,
-  Typography,
-  InputBase,
-  IconButton,
-} from "@mui/material";
-import { styled } from "@mui/system";
-import Link from "next/link";
+// pages/dashboard-inicio-l.js
+
+import React, { useState, useEffect } from 'react';
+import Map from '../components/Map';
+import { Box, Typography, InputBase, IconButton, CircularProgress } from "@mui/material";
 import Sidebar2 from "../components/Sidebar2";
 import styles from "../components/Dashboard.module.css";
+import { getWeatherData } from '../services/api'; // Función para obtener datos del clima
+import { getSafetyRecommendations } from '../services/openai'; // Función para obtener recomendaciones
 
 const DashboardInicioL = () => {
+  const [weatherData, setWeatherData] = useState(null);
+  const [recommendations, setRecommendations] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const weather = await getWeatherData();
+        setWeatherData(weather);
+
+        const safetyRecommendations = await getSafetyRecommendations(weather);
+        setRecommendations(safetyRecommendations);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Sidebar2 />
@@ -37,10 +56,45 @@ const DashboardInicioL = () => {
               </IconButton>
             </div>
           </div>
+
           <Typography variant="h4" gutterBottom>
             Inicio
           </Typography>
-          {/* Puedes agregar más contenido aquí */}
+
+          {/* Condiciones Meteorológicas Locales */}
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="h5" gutterBottom>
+              Condiciones Meteorológicas Locales
+            </Typography>
+            {loading ? (
+              <CircularProgress />
+            ) : weatherData ? (
+              <Box>
+                <Typography>Temperatura: {weatherData.temperature}°C</Typography>
+                <Typography>Velocidad del viento: {weatherData.windSpeed} km/h</Typography>
+                <Typography>Dirección del viento: {weatherData.windDirection}°</Typography>
+                <Typography>Humedad: {weatherData.humidity}%</Typography>
+              </Box>
+            ) : (
+              <Typography>No se pudieron obtener los datos meteorológicos.</Typography>
+            )}
+          </Box>
+
+          {/* Recomendaciones de Seguridad */}
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" gutterBottom>
+              Recomendaciones de Seguridad
+            </Typography>
+            {loading ? (
+              <CircularProgress />
+            ) : recommendations ? (
+              <Box>
+                <Typography>{recommendations}</Typography>
+              </Box>
+            ) : (
+              <Typography>No se pudieron obtener las recomendaciones de seguridad.</Typography>
+            )}
+          </Box>
         </Box>
       </div>
     </div>
@@ -48,3 +102,5 @@ const DashboardInicioL = () => {
 };
 
 export default DashboardInicioL;
+
+
