@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Map from '../components/Map';
+import 'leaflet/dist/leaflet.css'; // Importar estilos de Leaflet
 import { Box, Typography, InputBase, IconButton, CircularProgress } from "@mui/material";
 import Sidebar2 from "../components/Sidebar2";
 import styles from "../components/Dashboard.module.css";

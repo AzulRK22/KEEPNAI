@@ -3,10 +3,8 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, InputBase, IconButton } from "@mui/material";
 import Sidebar from "../components/Sidebar";
-import 'leaflet/dist/leaflet.css'; // Importar estilos de Leaflet
 import styles from "../components/Dashboard.module.css";
 import Notification from "../components/Notifications";
-import Map from '../components/Map'; // Importa el componente del mapa
 import { getWeatherData } from '../services/api'; // Importa la función que obtiene datos
 
 const DashboardInicioE = () => {
@@ -68,7 +66,12 @@ const DashboardInicioE = () => {
           </Typography>
 
           <Box sx={{ mt: 2 }}>
-            <Map />
+            <iframe
+              src="https://www.globalforestwatch.org/embed/map/country/CHL/?category=fires&mainMap=eyJzaG93QW5hbHlzaXMiOnRydWV9&map=eyJjZW50ZXIiOnsibGF0IjotMzkuMzE5OTkyNjQwODE2ODM1LCJsbmciOi04Ny45MzAwMjMxOTQ5NzI3Mn0sInpvb20iOjMuMjg4NTM4MzQ5NjY1ODY2LCJjYW5Cb3VuZCI6ZmFsc2UsImRhdGFzZXRzIjpbeyJkYXRhc2V0IjoicG9saXRpY2FsLWJvdW5kYXJpZXMiLCJsYXllcnMiOlsiZGlzcHV0ZWQtcG9saXRpY2FsLWJvdW5kYXJpZXMiLCJwb2xpdGljYWwtYm91bmRhcmllcyJdLCJib3VuZGFyeSI6dHJ1ZSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZX0seyJkYXRhc2V0IjoiZmlyZS1hbGVydHMtdmlpcnMiLCJsYXllcnMiOlsiZmlyZS1hbGVydHMtdmlpcnMiXSwib3BhY2l0eSI6MSwidmlzaWJpbGl0eSI6dHJ1ZSwicGFyYW1zIjp7InZpc2liaWxpdHkiOnRydWUsImFkbV9sZXZlbCI6ImFkbTAifSwidGltZWxpbmVQYXJhbXMiOnsic3RhcnREYXRlQWJzb2x1dGUiOiIyMDI0LTA1LTEyIiwiZW5kRGF0ZUFic29sdXRlIjoiMjAyNC0wOC0xMCIsInN0YXJ0RGF0ZSI6IjIwMjQtMDUtMTIiLCJlbmREYXRlIjoiMjAyNC0wOC0xMCIsInRyaW1FbmREYXRlIjoiMjAyNC0wOC0xMCJ9fV19"
+              width="100%"
+              height="500px"
+              style={{ border: 'none', borderRadius: '10px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', marginTop: '20px' }}
+            ></iframe>
           </Box>
 
           <Box sx={{ mt: 4 }}>
@@ -107,6 +110,8 @@ const DashboardInicioE = () => {
 };
 
 export default DashboardInicioE;
+
+
 
 
 

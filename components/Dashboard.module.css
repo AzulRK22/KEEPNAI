@@ -14,6 +14,7 @@
   background-color: #d3d3d3;
   padding: 20px;
   box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total del contenedor */
+  overflow-y: auto;
 }
 .header {
   display: flex;
@@ -54,7 +55,7 @@
   background-color: #fff;
   border-radius: 20px;
   padding: 20px;
-  height: calc(100vh - 90px); /* Ajusta la altura según el espacio disponible */
+  height: auto; /* Ajusta la altura según el espacio disponible */
 }
 .notificationIcon {
   position: relative;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const OPENAI_API_KEY = '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'; // Reemplaza con tu clave API válida
+const OPENAI_API_KEY = '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'
 const OPENAI_API_URL = 'https://api.openai.com/v1/completions';
 
 export const getSafetyRecommendations = async (weather) => {
