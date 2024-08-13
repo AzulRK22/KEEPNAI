@@ -15,29 +15,38 @@
 ## Características
 
 - **Mapa interactivo:** Visualización de incendios, áreas afectadas y recursos desplegados.
-- **Monitoreo en tiempo real:** Acceso a condiciones meteorológicas y actualizaciones de incidentes.
-- **Gestión de recursos:** Administración de equipos, vehículos y otros recursos necesarios durante una emergencia.
-- **Reportes:** Generación de reportes detallados para análisis post-incidente.
-- **Configuración personalizada:** Ajustes personalizados para usuarios de emergencia y locales.
+- **Monitoreo en por drones:** Activar el algoritmo para buscar la ruta que tomara el dron
+- **Loading data :** Subir informacion recabada por el dron para determinar si hay incendios
+- **Reportes:** Generación de reportes detallados para análisis post-incidente. (Planeado para el futuro)
+- **Configuración personalizada:** Ajustes personalizados para usuarios de emergencia y locales. (Planeado para el futuro)
 
 ## Tecnologías Utilizadas
 
 - **Frontend:**
+  - [Next.js](https://nextjs.org/)
   - [React.js](https://reactjs.org/)
   - [Styled-Components](https://styled-components.com/)
   - [React Router](https://reactrouter.com/)
   - [Google Fonts](https://fonts.google.com/)
 
-- **Backend (futuro):**
-  - [Node.js](https://nodejs.org/)
+- **Backend:**
+  - [Flask](https://flask.palletsprojects.com/) 
 
 - **Otros:**
+  - [Node.js](https://nodejs.org/) - 
   - [Git](https://git-scm.com/)
   - [GitHub](https://github.com/)
 
+## Estructura del Proyecto
+
+El proyecto está dividido en dos principales secciones:
+
+- **Frontend:** En el directorio `frontend`, se encuentra la aplicación Next.js que incluye todos los componentes de la interfaz de usuario.
+- **Backend (Futuro):** En el directorio `backend`, se planea incluir la API en Flask para la gestión de datos y la lógica del servidor.
+
 ## Instalación
 
-Sigue estos pasos para configurar el proyecto en tu entorno local.
+Sigue estos pasos para configurar el proyecto en tu entorno local:
 
 1. **Clona el repositorio:**
 
@@ -45,13 +54,29 @@ Sigue estos pasos para configurar el proyecto en tu entorno local.
    git clone https://github.com/AzulRK22/fire-eye-dashboard.git
    cd fire-eye-dashboard
 
-2. **Instala las dependencias:**
-   Usando npm: npm install
-   
-3. **Inicia la aplicación:**
 
-   npm start o npm run dev
-4. **Accede a la aplicación:**
+2. **Configura el frontend:**
+   
+    cd frontend
+    npm install
+   
+3. **Configura el backend:**
+   
+   cd ../backend
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   
+4. **Inicia el frontend:**
+   
+   cd ../frontend
+   npm run dev
+   
+5. **Inicia el backend:**
+   
+   flask run
+   
+6. **Accede a la aplicación:**
 
    Abre tu navegador y ve a http://localhost:3000 para ver la aplicación en funcionamiento.
 
@@ -74,10 +99,7 @@ Abre un Pull Request.
 ## Licencia
 
 
-Este `README.md` debería cubrir todos los aspectos básicos de tu proyecto y ser útil tanto para otros desarrolladores que quieran contribuir como para cualquier persona que desee entender y utilizar la aplicación.
-
-
-   
+Este `README.md` debería cubrir todos los aspectos básicos de tu proyecto y ser útil tanto para otros desarrolladores que quieran contribuir como para cualquier persona que desee entender y utilizar la aplicación.  
 
    
 
