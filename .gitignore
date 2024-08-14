@@ -8,6 +8,8 @@ bazel-out/
 node_modules/
 npm-debug.log
 yarn-error.log
+frontend/.next/
+
 
 # Python
 __pycache__/
