@@ -1,4 +1,4 @@
-#!/Users/azulramirezkuri/Documents/GitHub/fire/backend/venv/bin/python3
+#!/Users/home/GitRepos/FIRE-EYE/backend/venv/bin/python3.12
 # -*- coding: utf-8 -*-
 import re
 import sys
