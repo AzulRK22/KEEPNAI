@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from flask_cors import CORS
 import math
 from pyproj import Geod
+from flask import Flask
+
 
 
 app = Flask(__name__)
@@ -33,13 +35,15 @@ def generate_centered_search_waypoints(start_coord, flight_time, speed, vision_r
     waypoints.append(start_coord)
     return waypoints
 
-@app.route('/api/generate_waypoints', methods=['POST'])
+@app.route('/generate_waypoints', methods=['POST'])
 def generate_waypoints_endpoint():
     data = request.get_json()
     lat = data.get('lat')
     lng = data.get('lng')
     
-    # You might want to validate the data here
+    # Validate input
+    if lat is None or lng is None:
+        return jsonify({"error": "Invalid input Flaks", "waypoints": []}), 400
 
     start_coord = (lat, lng)
     flight_time = 25  # Example value
@@ -49,9 +53,11 @@ def generate_waypoints_endpoint():
     waypoints = generate_centered_search_waypoints(start_coord, flight_time, speed, vision_range)
     
     return jsonify(waypoints)
+
+
 @app.route('/')
 def hello_world():
-    return 'Hellossdfsddfsdfff, World!'
+    return 'dsf, World!'
 
 if __name__ == '__main__':
     app.run(debug=True)

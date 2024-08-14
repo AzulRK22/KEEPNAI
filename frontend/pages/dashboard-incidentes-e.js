@@ -10,6 +10,7 @@ import { styled } from "@mui/system";
 import Link from "next/link";
 import Sidebar from "../public/src/components/Sidebar";
 import styles from "../public/src/components/Dashboard.module.css";
+import WaypointMapWrapper from '../public/src/components/WaypointMapWrapper';
 
 const DashboardIncidentesE = () => {
   return (
@@ -38,9 +39,9 @@ const DashboardIncidentesE = () => {
             </div>
           </div>
           <Typography variant="h4" gutterBottom>
-            Incidentes
+            Mapa con Rutas 
           </Typography>
-          {/* Puedes agregar más contenido aquí */}
+          <WaypointMapWrapper />
         </Box>
       </div>
     </div>

@@ -75,6 +75,7 @@ Sigue estos pasos para configurar el proyecto en tu entorno local:
 5. **Inicia el backend:**
    
    flask run
+   flask --app app.py --debug run
    
 6. **Accede a la aplicación:**
 
