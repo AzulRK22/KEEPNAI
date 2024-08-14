@@ -1,2 +1,59 @@
-node_modules
+# Compiled output
+dist/
+tmp/
+out-tsc/
+bazel-out/
 
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.python-version
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+
+# C#
+bin/
+obj/
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor/IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Database files
+*.sqlite
+*.db
+
+# Environment variables
+.env
+.env.*
+
+# Miscellaneous
+.DS_Store
+*.bak
+*.tmp
