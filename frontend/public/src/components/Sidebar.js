@@ -61,7 +61,7 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-reportes-e')}
           >
             <img src="/icons/Folder.svg" alt="Reports Icon" className={styles.icon} />
-            <span className={styles.navText}>Reportes</span>
+            <span className={styles.navText}>Asistente Virtual</span>
           </button>
         </li>
         <li>
