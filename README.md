@@ -66,6 +66,8 @@ Sigue estos pasos para configurar el proyecto en tu entorno local:
    python -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
+   flask db upgrade
+
    
 4. **Inicia el frontend:**
    

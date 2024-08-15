@@ -2,6 +2,7 @@ from .models import db, Mission, Coordinate, ImageData
 from datetime import datetime
 import os
 
+
 def seed_database(app):
     with app.app_context():
         if Mission.query.count() == 0 and Coordinate.query.count() == 0:
@@ -50,3 +51,45 @@ def seed_database(app):
             print("Database seeded successfully!")
         else:
             print("Database already contains data, skipping seed.")
+
+
+from datetime import datetime, timedelta
+
+def seed_missions():
+    with app.app_context():
+        # Clear existing missions
+        Mission.query.delete()
+
+        # Create two sample missions with Chilean coordinates
+        mission1 = Mission(
+            schedule=datetime.utcnow() + timedelta(days=1),
+            priority_score=0.8,
+            mode="search",
+            overlap_pct=20,
+            vision_range=200,
+            speed=10,
+            flight_time=25,
+            user_generated=False,
+            starting_lat=-33.4489,  # Santiago, Chile
+            starting_long=-70.6693
+        )
+
+        mission2 = Mission(
+            schedule=datetime.utcnow() + timedelta(days=2),
+            priority_score=0.6,
+            mode="patrol",
+            overlap_pct=15,
+            vision_range=250,
+            speed=15,
+            flight_time=30,
+            user_generated=True,
+            starting_lat=-33.0472,  # Valparaíso, Chile
+            starting_long=-71.6127
+        )
+
+        # Add missions to the session and commit
+        db.session.add(mission1)
+        db.session.add(mission2)
+        db.session.commit()
+
+        print("Missions seeded successfully with Chilean coordinates!")
