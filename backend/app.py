@@ -1,94 +1,64 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
+from config import Config
+from models.models import db, Mission, Coordinate, ImageData
+from models.seed import seed_database
+from werkzeug.utils import secure_filename
+import os
 import math
 from pyproj import Geod
-from flask import Flask, request, jsonify, send_from_directory
-import os
-from werkzeug.utils import secure_filename
 from datetime import datetime
-
-
+#import openai
 
 app = Flask(__name__)
+app.config.from_object(Config)
 CORS(app)
 
-# Database configuration
-basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'coordinates.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db.init_app(app)
+with app.app_context():
+    db.create_all()
+    #seed_database(app)
 
-db = SQLAlchemy(app)
-
-class Mission(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    schedule = db.Column(db.DateTime, nullable=False)
-    priority_score = db.Column(db.Float, nullable=False)
-    mode = db.Column(db.String(50), nullable=False)
-    overlap_pct = db.Column(db.Float, nullable=False)
-    vision_range = db.Column(db.Float, nullable=False)
-    speed = db.Column(db.Float, nullable=False)
-    flight_time = db.Column(db.Float, nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
-    # Relationship with Coordinate
-    coordinates = db.relationship('Coordinate', back_populates='mission', cascade='all, delete-orphan')
-
-    def __repr__(self):
-        return f'<Mission {self.name}>'
-
-class Coordinate(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    mission_id = db.Column(db.Integer, db.ForeignKey('mission.id'), nullable=True)  # Changed to nullable
-
-    # Relationship with Mission
-    mission = db.relationship('Mission', back_populates='coordinates')
-
-    def __repr__(self):
-        return f'<Coordinate {self.latitude}, {self.longitude}>'
+@app.route('/upload_image', methods=['POST'])
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
     
+    if file:
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
 
-def seed_database():
-    if Mission.query.count() == 0 and Coordinate.query.count() == 0:
-        # Create a sample mission
-        sample_mission = Mission(
-            name="Sample Mission",
-            schedule=datetime.utcnow(),
-            priority_score=0.8,
-            mode="standard",
-            overlap_pct=0.2,
-            vision_range=200,
-            speed=10,
-            flight_time=25
+        new_image_data = ImageData(
+            filename=filename,
+            latitude=float(request.form['latitude']),
+            longitude=float(request.form['longitude']),
+            classification=request.form['classification']
         )
-        db.session.add(sample_mission)
-
-        # Create sample coordinates associated with the mission
-        sample_coordinates = [
-            {"latitude": -33.0472, "longitude": -71.6127},
-            {"latitude": 40.7128, "longitude": -74.0060},
-            {"latitude": 51.5074, "longitude": -0.1278},
-        ]
-        for coord in sample_coordinates:
-            new_coordinate = Coordinate(**coord, mission=sample_mission)
-            db.session.add(new_coordinate)
-        
-        # Create sample coordinates not associated with any mission
-        independent_coordinates = [
-            {"latitude": 35.6762, "longitude": 139.6503},
-            {"latitude": -33.8688, "longitude": 151.2093}
-        ]
-        for coord in independent_coordinates:
-            new_coordinate = Coordinate(**coord)
-            db.session.add(new_coordinate)
-        
+        db.session.add(new_image_data)
         db.session.commit()
-        print("Database seeded successfully!")
-    else:
-        print("Database already contains data, skipping seed.")
+
+        return jsonify({"message": "Image uploaded successfully", "id": new_image_data.id}), 201
+
+@app.route('/image_data', methods=['GET'])
+def get_image_data():
+    images = ImageData.query.all()
+    return jsonify([{
+        "id": img.id,
+        "filename": img.filename,
+        "latitude": img.latitude,
+        "longitude": img.longitude,
+        "classification": img.classification,
+        "timestamp": img.timestamp.isoformat()
+    } for img in images])
+
+@app.route('/image/<int:image_id>', methods=['GET'])
+def get_image(image_id):
+    image_data = ImageData.query.get_or_404(image_id)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], image_data.filename)
 
 
 
@@ -118,17 +88,23 @@ def generate_centered_search_waypoints(start_coord, flight_time, speed, vision_r
     waypoints.append(start_coord)
     return waypoints
 
-@app.route('/generate_waypoints', methods=['POST'])
+@app.route('/generate_waypoints', methods=['POST', 'GET'])
 def generate_waypoints_endpoint():
     if request.method == 'POST':
         data = request.get_json()
         lat = data.get('lat')
         lng = data.get('lng')
 
-        # Save the coordinates to the database
-        new_coordinate = Coordinate(latitude=lat, longitude=lng)
-        db.session.add(new_coordinate)
-        db.session.commit()
+        try:
+            # Save the coordinates to the database
+            new_coordinate = Coordinate(latitude=lat, longitude=lng)
+            db.session.add(new_coordinate)
+            db.session.commit()
+            print(f"Coordinate saved: {lat}, {lng}")
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error saving coordinate: {str(e)}")
+            return jsonify({"error": f"Database error: {str(e)}"}), 500
     else:  # GET request
         lat, lng = -33.0472, -71.6127  # Default coordinates for GET requests
 
@@ -230,10 +206,5 @@ def chat():
 def hello_world():
     return 'dsf, World!'
 
-# Create the database tables
-with app.app_context():
-    db.create_all()
-
 if __name__ == '__main__':
     app.run(debug=True)
-

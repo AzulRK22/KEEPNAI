@@ -33,8 +33,8 @@ const Sidebar = () => {
             className={`${styles.navItem} ${isActive('/dashboard-incidentes-e') ? styles.active : ''}`}
             onClick={() => handleNavigation('/dashboard-incidentes-e')}
           >
-            <img src="/icons/incidentes.svg" alt="Alert Icon" className={styles.icon} />
-            <span className={styles.navText}>Incidentes</span>
+            <img src="/icons/mapa.svg" alt="Alert Icon" className={styles.icon} />
+            <span className={styles.navText}>Mapa</span>
           </button>
         </li>
         <li>

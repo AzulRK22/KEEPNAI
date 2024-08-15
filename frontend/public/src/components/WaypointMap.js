@@ -75,7 +75,6 @@ const WaypointMap = () => {
 
   return (
     <div>
-      <h1>Waypoint Visualizer</h1>
       <MapContainer
         center={pinPosition}
         zoom={13}

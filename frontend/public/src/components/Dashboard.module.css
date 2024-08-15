@@ -71,6 +71,66 @@
   background-color: green;
   border-radius: 50%;
 }
+.configPanel {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+}
 
+.sliderContainer {
+  margin-bottom: 20px;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.calculateButton,
+.downloadButton {
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-transform: none;
+  border-radius: 25px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.calculateButton {
+  background-color: #ff6f00;
+  color: white;
+}
+
+.calculateButton:hover {
+  background-color: #ff8f00;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.downloadButton {
+  background-color: #1976d2;
+  color: white;
+}
+
+.downloadButton:hover:not(:disabled) {
+  background-color: #1565c0;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.disabledButton {
+  background-color: #bdbdbd !important;
+  color: #757575 !important;
+  cursor: not-allowed;
+}
+
+.calculateButton:active,
+.downloadButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
   
