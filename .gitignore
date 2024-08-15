@@ -35,6 +35,7 @@ obj/
 
 # OS-specific
 .DS_Store
+backend/.DS_Store
 Thumbs.db
 
 # Editor/IDE files
