@@ -17,7 +17,7 @@ const DataTable = ({ data, onSelectRoute, onDownloadRoute }) => {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Route Number</TableCell>
+            <TableCell>Route Number:</TableCell>
             <TableCell>Priority Score</TableCell>
             <TableCell>Mode</TableCell>
             <TableCell>Flight Time</TableCell>
