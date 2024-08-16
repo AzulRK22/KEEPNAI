@@ -1,4 +1,3 @@
-// components/DataTable.js
 import React from "react";
 import {
   Table,
@@ -9,9 +8,15 @@ import {
   TableRow,
   Paper,
   Button,
+  Typography,
 } from "@mui/material";
 
-const DataTable = ({ data, onSelectRoute, onDownloadRoute }) => {
+const DataTable = ({ routes, onSelectRoute, onDownloadRoute }) => {
+  console.log("Routes prop:", routes);
+  if (!routes || routes.length === 0) {
+    return <Typography sx={{ mt: 2 }}>No routes available.</Typography>;
+  }
+
   return (
     <TableContainer component={Paper} sx={{ mt: 2 }}>
       <Table>
@@ -20,29 +25,30 @@ const DataTable = ({ data, onSelectRoute, onDownloadRoute }) => {
             <TableCell>Route Number</TableCell>
             <TableCell>Priority Score</TableCell>
             <TableCell>Mode</TableCell>
-            <TableCell>Flight Time</TableCell>
-            <TableCell>Action</TableCell>
+            <TableCell>Flight Time (min)</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row, index) => (
-            <TableRow key={row.id}>
+          {routes.map((route, index) => (
+            <TableRow key={route.id}>
               <TableCell>{index + 1}</TableCell>
-              <TableCell>{row.priority_score}</TableCell>
-              <TableCell>{row.mode}</TableCell>
-              <TableCell>{row.flight_time}</TableCell>
+              <TableCell>{route.priority_score}</TableCell>
+              <TableCell>{route.mode}</TableCell>
+              <TableCell>{route.flight_time}</TableCell>
               <TableCell>
                 <Button
                   variant="contained"
                   color="primary"
-                  onClick={() => onSelectRoute(row)}
+                  onClick={() => onSelectRoute(route)}
+                  sx={{ mr: 1 }}
                 >
                   View on Map
                 </Button>
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => onDownloadRoute(row)}
+                  onClick={() => onDownloadRoute(route)}
                 >
                   Download WP File
                 </Button>
@@ -54,5 +60,7 @@ const DataTable = ({ data, onSelectRoute, onDownloadRoute }) => {
     </TableContainer>
   );
 };
+
+
 
 export default DataTable;

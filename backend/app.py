@@ -4,6 +4,8 @@ from config import Config
 from extensions import db, migrate
 from models.models import Mission, Coordinate, ImageData
 from models.seeds import seed_missions  # Updated import statement
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
 #import openai
 
@@ -13,6 +15,7 @@ def create_app():
     app.config.from_object(Config)
     
     CORS(app)
+    
     db.init_app(app)
     migrate.init_app(app, db)
 
@@ -172,6 +175,8 @@ def create_app():
                 ]
             }
             mission_list.append(mission_data)
+        logging.debug("Your message here")
+
         return jsonify(missions=mission_list)
 
     @app.route('/api/chat', methods=['POST'])

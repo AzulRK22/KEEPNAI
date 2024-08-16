@@ -16,29 +16,45 @@ import styles from "../public/src/components/Dashboard.module.css";
 import WaypointMapWrapper from '../public/src/components/WaypointMapWrapper';
 import DataTable from '../public/src/components/DataTable';
 
+
+
 const DashboardMonitoreo = () => {
-  const [routesData, setRoutesData] = useState([]);
+  const [missions, setMissions] = useState([]);
   const [selectedRoute, setSelectedRoute] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Drone configuration states
-  const [altitude, setAltitude] = useState(50); // Overlap
-  const [speed, setSpeed] = useState(10); // Speed
-  const [mode, setMode] = useState(false); // Mode (true = High, false = Low)
-  const [visionRange, setVisionRange] = useState(100); // Vision Range
-  const [flightTime, setFlightTime] = useState(30); // Flight Time
+  const [altitude, setAltitude] = useState(0);
+  const [speed, setSpeed] = useState(0);
+  const [mode, setMode] = useState('');
+  const [visionRange, setVisionRange] = useState(0);
+  const [flightTime, setFlightTime] = useState(0);
 
-  // Fetch routes data from backend
   useEffect(() => {
-    const fetchRoutesData = async () => {
+    const fetchMissionsData = async () => {
+      setLoading(true);
+      setError(null);
       try {
         const response = await axios.get("http://localhost:5000/api/missions");
-        setRoutesData(response.data);
+        console.log("API response:", response.data);
+
+        if (response.data && Array.isArray(response.data.missions)) {
+          setMissions(response.data.missions);
+        } else {
+          console.error("API did not return an array of missions:", response.data);
+          setMissions([]);
+        }
       } catch (error) {
-        console.error("Error fetching routes data:", error);
+        console.error("Error fetching missions data:", error);
+        setError("Failed to fetch missions data. Please try again later.");
+        setMissions([]);
+      } finally {
+        setLoading(false);
       }
     };
-    
-    fetchRoutesData();
+
+    fetchMissionsData();
   }, []);
 
   const handleRouteSelect = (route) => {
@@ -55,9 +71,10 @@ const DashboardMonitoreo = () => {
         flightTime,
       });
       if (response.data.success) {
-        // Handle successful route generation, e.g., update routes data
         alert("Route generated successfully!");
-        // Optionally, you can fetch updated routes data here
+        // Optionally, you can fetch updated missions data here
+        const updatedResponse = await axios.get("http://localhost:5000/api/missions");
+        setMissions(updatedResponse.data.missions || []);
       } else {
         console.error("Error generating route:", response.data.message);
       }
@@ -65,10 +82,11 @@ const DashboardMonitoreo = () => {
       console.error("Error generating route:", error);
     }
   };
+
   const handleDownloadRoute = async (route) => {
     try {
       const response = await axios.get(`http://localhost:5000/download_wp/${route.id}`, {
-        responseType: 'blob', // Important for file downloads
+        responseType: 'blob',
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
@@ -110,16 +128,27 @@ const DashboardMonitoreo = () => {
           <Typography variant="h4" gutterBottom>
             Monitoreo
           </Typography>
-          <DataTable data={routesData} onSelectRoute={handleRouteSelect} />
+
+          {loading ? (
+            <Typography>Loading...</Typography>
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
+          ) : (
+            <DataTable
+              routes={missions}
+              onSelectRoute={handleRouteSelect}
+              onDownloadRoute={handleDownloadRoute}
+            />
+          )}
+
           <WaypointMapWrapper selectedRoute={selectedRoute} />
 
-          {/* Drone Configuration Panel */}
           <Box className={styles.configPanel}>
             <Typography variant="h6" gutterBottom>
               Drone Configuration
             </Typography>
             <Box className={styles.sliderContainer}>
-              <Typography>Overlap: {altitude} %</Typography>
+              <Typography>Altitude: {altitude} m</Typography>
               <Slider
                 value={altitude}
                 onChange={(_, newValue) => setAltitude(newValue)}
@@ -137,8 +166,8 @@ const DashboardMonitoreo = () => {
               />
             </Box>
             <FormControlLabel
-              control={<Switch checked={mode} onChange={(e) => setMode(e.target.checked)} />}
-              label={mode ? "High Altitude" : "Low Altitude"}
+              control={<Switch checked={mode === 'high'} onChange={(e) => setMode(e.target.checked ? 'high' : 'low')} />}
+              label={mode === 'high' ? "High Altitude" : "Low Altitude"}
             />
             <Box className={styles.sliderContainer}>
               <Typography>Vision Range: {visionRange} m</Typography>
@@ -173,5 +202,3 @@ const DashboardMonitoreo = () => {
 };
 
 export default DashboardMonitoreo;
-
-
