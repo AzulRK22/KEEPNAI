@@ -36,7 +36,7 @@ const DraggablePin = ({ position, onDragEnd }) => {
   );
 };
 
-const WaypointMap = () => {
+const WaypointMap = ({ selectedRoute }) => {
   const [waypoints, setWaypoints] = useState([]);
   const [pinPosition, setPinPosition] = useState([-33.0472, -71.6127]);
 
@@ -90,9 +90,19 @@ const WaypointMap = () => {
         {Array.isArray(waypoints) && waypoints.length > 0 && (
           <Polyline positions={waypoints} color="blue" />
         )}
+        {selectedRoute && (
+          <>
+            <Polyline
+              positions={selectedRoute.path}
+              color="red" // Different color to distinguish the selected route
+            />
+            <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>
+              <strong>Route Number:</strong> {selectedRoute.routeNumber} {/* Display route number */}
+            </div>
+          </>
+        )}
       </MapContainer>
 
-      <h2>Waypoints</h2>
       <ul>
         {waypoints.map((wp, index) => (
           <li key={index}>
@@ -105,3 +115,4 @@ const WaypointMap = () => {
 };
 
 export default WaypointMap;
+
