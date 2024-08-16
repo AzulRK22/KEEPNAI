@@ -42,7 +42,7 @@ const WaypointMap = ({ selectedRoute }) => {
 
   const handlePinDragEnd = (newPosition) => {
     setPinPosition([newPosition.lat, newPosition.lng]);
-    axios.post('http://localhost:5000/generate_waypoints', { lat: newPosition.lat, lng: newPosition.lng })
+    axios.post('http://127.0.0.1:5000/generate_waypoints', { lat: newPosition.lat, lng: newPosition.lng })
       .then(response => {
         if (Array.isArray(response.data.waypoints)) {
           setWaypoints(response.data.waypoints);
@@ -58,7 +58,7 @@ const WaypointMap = ({ selectedRoute }) => {
   };
 
   useEffect(() => {
-    axios.get('http://localhost:5000/generate_waypoints')
+    axios.get('http://127.0.0.1:5000/generate_waypoints')
       .then(response => {
         if (Array.isArray(response.data.waypoints)) {
           setWaypoints(response.data.waypoints);

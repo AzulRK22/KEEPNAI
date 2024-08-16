@@ -2,6 +2,7 @@
   "name": "fire",
   "version": "1.0.0",
   "main": "index.js",
+  "proxy": "http://localhost:5000",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -17,12 +18,15 @@
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "leaflet": "^1.9.4",
     "next": "^14.2.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.26.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0"
   }
 }

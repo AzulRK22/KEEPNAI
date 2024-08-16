@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Table,
   TableBody,
@@ -41,14 +42,16 @@ const DataTable = ({ routes, onSelectRoute, onDownloadRoute }) => {
                   variant="contained"
                   color="primary"
                   onClick={() => onSelectRoute(route)}
-                  sx={{ mr: 1 }}
+                  startIcon={<map />}
+                  sx={{ mr: 1 , background: "#FB8C00"}}
                 >
                   View on Map
                 </Button>
                 <Button
                   variant="contained"
-                  color="secondary"
+                  color="primary"
                   onClick={() => onDownloadRoute(route)}
+                  sx={{ mr: 1 , background: "#22BB55"}}
                 >
                   Download WP File
                 </Button>

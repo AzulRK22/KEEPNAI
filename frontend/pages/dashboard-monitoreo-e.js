@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import axios from "axios";
 import {
   Container,
@@ -13,10 +14,8 @@ import {
 } from "@mui/material";
 import Sidebar from "../public/src/components/Sidebar";
 import styles from "../public/src/components/Dashboard.module.css";
-import WaypointMapWrapper from '../public/src/components/WaypointMapWrapper';
-import DataTable from '../public/src/components/DataTable';
-
-
+import WaypointMapWrapper from "../public/src/components/WaypointMapWrapper";
+import DataTable from "../public/src/components/DataTable";
 
 const DashboardMonitoreo = () => {
   const [missions, setMissions] = useState([]);
@@ -27,7 +26,7 @@ const DashboardMonitoreo = () => {
   // Drone configuration states
   const [altitude, setAltitude] = useState(0);
   const [speed, setSpeed] = useState(0);
-  const [mode, setMode] = useState('');
+  const [mode, setMode] = useState("");
   const [visionRange, setVisionRange] = useState(0);
   const [flightTime, setFlightTime] = useState(0);
 
@@ -36,13 +35,16 @@ const DashboardMonitoreo = () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await axios.get("http://localhost:5000/api/missions");
+        const response = await axios.get("http://127.0.0.1:5000/api/missions");
         console.log("API response:", response.data);
 
         if (response.data && Array.isArray(response.data.missions)) {
           setMissions(response.data.missions);
         } else {
-          console.error("API did not return an array of missions:", response.data);
+          console.error(
+            "API did not return an array of missions:",
+            response.data
+          );
           setMissions([]);
         }
       } catch (error) {
@@ -63,17 +65,22 @@ const DashboardMonitoreo = () => {
 
   const handleGenerateRoute = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/generate_route", {
-        altitude,
-        speed,
-        mode,
-        visionRange,
-        flightTime,
-      });
+      const response = await axios.post(
+        "http://127.0.0.1:5000/generate_route",
+        {
+          altitude,
+          speed,
+          mode,
+          visionRange,
+          flightTime,
+        }
+      );
       if (response.data.success) {
         alert("Route generated successfully!");
         // Optionally, you can fetch updated missions data here
-        const updatedResponse = await axios.get("http://localhost:5000/api/missions");
+        const updatedResponse = await axios.get(
+          "http://127.0.0.1:5000/api/missions"
+        );
         setMissions(updatedResponse.data.missions || []);
       } else {
         console.error("Error generating route:", response.data.message);
@@ -85,13 +92,16 @@ const DashboardMonitoreo = () => {
 
   const handleDownloadRoute = async (route) => {
     try {
-      const response = await axios.get(`http://localhost:5000/download_wp/${route.id}`, {
-        responseType: 'blob',
-      });
+      const response = await axios.get(
+        `http://127.0.0.1:5000/download_wp/${route.id}`,
+        {
+          responseType: "blob",
+        }
+      );
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.setAttribute('download', `route_${route.id}.wp`);
+      link.setAttribute("download", `route_${route.id}.wp`);
       document.body.appendChild(link);
       link.click();
       link.remove();
@@ -154,6 +164,7 @@ const DashboardMonitoreo = () => {
                 onChange={(_, newValue) => setAltitude(newValue)}
                 min={0}
                 max={100}
+                sx={{ color: "#FB8C00" }}
               />
             </Box>
             <Box className={styles.sliderContainer}>
@@ -163,11 +174,25 @@ const DashboardMonitoreo = () => {
                 onChange={(_, newValue) => setSpeed(newValue)}
                 min={0}
                 max={20}
+                sx={{ color: "#FB8C00" }}
               />
             </Box>
             <FormControlLabel
-              control={<Switch checked={mode === 'high'} onChange={(e) => setMode(e.target.checked ? 'high' : 'low')} />}
-              label={mode === 'high' ? "High Altitude" : "Low Altitude"}
+              control={
+                <Switch
+                  checked={mode === "high"}
+                  onChange={(e) => setMode(e.target.checked ? "high" : "low")}
+                  sx={{
+                    "& .MuiSwitch-switchBase": {
+                      color: "#FB8C00", // Color when the switch is off
+                    },
+                    "& .MuiSwitch-switchBase.Mui-checked": {
+                      color: "#FB8C00", // Color when the switch is on
+                    },
+                  }}
+                />
+              }
+              label={mode === "high" ? "High Altitude" : "Low Altitude"}
             />
             <Box className={styles.sliderContainer}>
               <Typography>Vision Range: {visionRange} m</Typography>
@@ -176,6 +201,7 @@ const DashboardMonitoreo = () => {
                 onChange={(_, newValue) => setVisionRange(newValue)}
                 min={50}
                 max={500}
+                sx={{ color: "#FB8C00" }}
               />
             </Box>
             <Box className={styles.sliderContainer}>
@@ -185,12 +211,15 @@ const DashboardMonitoreo = () => {
                 onChange={(_, newValue) => setFlightTime(newValue)}
                 min={5}
                 max={60}
+                sx={{ color: "#FB8C00" }}
               />
             </Box>
             <Button
               variant="contained"
               color="primary"
               onClick={handleGenerateRoute}
+              sx={{ background: "#FB8C00" }}
+              startIcon={<FlightTakeoffIcon />}
             >
               Generate Route
             </Button>
