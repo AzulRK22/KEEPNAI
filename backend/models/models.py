@@ -52,8 +52,8 @@ class Coordinate(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    sequence_number = db.Column(db.Integer, nullable=False)  # New field to ensure consecutive order
-    mission_id = db.Column(db.Integer, db.ForeignKey('mission.id'), nullable=True)
+    sequence_number = db.Column(db.Integer, nullable=False)
+    mission_id = db.Column(db.Integer, db.ForeignKey('mission.id'), nullable=False)
     mission = db.relationship('Mission', back_populates='coordinates')
 
     def __repr__(self):

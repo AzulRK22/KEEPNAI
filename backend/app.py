@@ -1,18 +1,24 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
 from extensions import db, migrate
 from models.models import Mission, Coordinate, ImageData
+from models.seeds import seed_missions  # Updated import statement
+
 #import openai
 
 def create_app():
-    
+
     app = Flask(__name__)
     app.config.from_object(Config)
     
     CORS(app)
     db.init_app(app)
     migrate.init_app(app, db)
+
+    with app.app_context():
+        db.create_all()
+        seed_missions(app, db)
 
 
     @app.route('/upload_image', methods=['POST'])
@@ -139,22 +145,21 @@ def create_app():
         return jsonify({"message": "Mission created successfully", "mission_id": new_mission.id}), 201
 
     # Route to get all missions
-
-    @app.route('/missions', methods=['GET'])
+    @app.route('/api/missions', methods=['GET'])
     def get_missions():
         missions = Mission.query.all()
         mission_list = []
         for mission in missions:
             mission_data = {
                 'id': mission.id,
-                'schedule': mission.schedule,
+                'schedule': mission.schedule.isoformat() if mission.schedule else None,
                 'priority_score': mission.priority_score,
                 'mode': mission.mode,
                 'overlap_pct': mission.overlap_pct,
                 'vision_range': mission.vision_range,
                 'speed': mission.speed,
                 'flight_time': mission.flight_time,
-                'created_at': mission.created_at,
+                'created_at': mission.created_at.isoformat(),
                 'user_generated': mission.user_generated,
                 'starting_lat': mission.starting_lat,
                 'starting_long': mission.starting_long,
