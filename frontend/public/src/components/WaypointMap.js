@@ -1,8 +1,25 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import L from 'leaflet';
-import axios from 'axios';
-import { MapContainer, TileLayer, Polyline, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useState, useEffect, useMemo, useRef } from "react";
+import L from "leaflet";
+import axios from "axios";
+import {
+  MapContainer,
+  TileLayer,
+  Polyline,
+  Marker,
+  Popup,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+
+// Override the default icon globally
+delete L.Icon.Default.prototype._getIconUrl;
+
+L.Icon.Default.mergeOptions({
+  iconUrl: '/leaflet/leaf1.png',
+  iconRetinaUrl: '/leaflet/leaf1.png',
+  iconSize: [25, 41], // Adjust these sizes as needed
+  iconAnchor: [12, 41],
+  shadowUrl: null, // Remove the shadow if it's not needed
+});
 
 const DraggablePin = ({ position, onDragEnd }) => {
   const markerRef = useRef(null);
@@ -16,7 +33,7 @@ const DraggablePin = ({ position, onDragEnd }) => {
         }
       },
     }),
-    [onDragEnd],
+    [onDragEnd]
   );
 
   return (
@@ -25,11 +42,6 @@ const DraggablePin = ({ position, onDragEnd }) => {
       eventHandlers={eventHandlers}
       position={position}
       ref={markerRef}
-      icon={L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-      })}
     >
       <Popup>Drag me to select a location!</Popup>
     </Marker>
@@ -37,82 +49,42 @@ const DraggablePin = ({ position, onDragEnd }) => {
 };
 
 const WaypointMap = ({ selectedRoute }) => {
-  const [waypoints, setWaypoints] = useState([]);
-  const [pinPosition, setPinPosition] = useState([-33.0472, -71.6127]);
-
-  const handlePinDragEnd = (newPosition) => {
-    setPinPosition([newPosition.lat, newPosition.lng]);
-    axios.post('http://127.0.0.1:5000/generate_waypoints', { lat: newPosition.lat, lng: newPosition.lng })
-      .then(response => {
-        if (Array.isArray(response.data.waypoints)) {
-          setWaypoints(response.data.waypoints);
-        } else {
-          console.error('Unexpected response format:', response.data);
-          setWaypoints([]);
-        }
-      })
-      .catch(error => {
-        console.error('Error sending waypoint:', error);
-        setWaypoints([]);
-      });
-  };
+  const [coordinates, setCoordinates] = useState([]);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:5000/generate_waypoints')
-      .then(response => {
-        if (Array.isArray(response.data.waypoints)) {
-          setWaypoints(response.data.waypoints);
-        } else {
-          console.error('Unexpected response format:', response.data);
-          setWaypoints([]);
-        }
-      })
-      .catch(error => {
-        console.error('Error fetching waypoints:', error);
-        setWaypoints([]);
-      });
-  }, []);
+    if (selectedRoute && selectedRoute.coordinates) {
+      setCoordinates(selectedRoute.coordinates);
+    }
+  }, [selectedRoute]);
+
+  const mapCenter = useMemo(() => {
+    if (coordinates.length > 0) {
+      return [coordinates[0].latitude, coordinates[0].longitude];
+    }
+    return [-33.4489, -70.6693];
+  }, [coordinates]);
 
   return (
     <div>
-      <MapContainer
-        center={pinPosition}
-        zoom={13}
-        style={{ height: "600px", width: "100%" }}
-      >
+      <MapContainer center={mapCenter} zoom={13} style={{ height: "400px", width: "100%" }}>
         <TileLayer
-          url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          subdomains='abcd'
-          maxZoom={20}
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        <DraggablePin position={pinPosition} onDragEnd={handlePinDragEnd} />
-        {Array.isArray(waypoints) && waypoints.length > 0 && (
-          <Polyline positions={waypoints} color="blue" />
-        )}
-        {selectedRoute && (
-          <>
-            <Polyline
-              positions={selectedRoute.path}
-              color="red" // Different color to distinguish the selected route
-            />
-            <div style={{ position: 'absolute', top: '10px', left: '10px', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>
-              <strong>Route Number:</strong> {selectedRoute.routeNumber} {/* Display route number */}
-            </div>
-          </>
+        {coordinates.length > 0 && (
+          <Polyline positions={coordinates.map(coord => [coord.latitude, coord.longitude])} color="blue">
+            {coordinates.map((coord, index) => (
+              <Marker key={index} position={[coord.latitude, coord.longitude]}>
+                <Popup>
+                  Sequence Number: {coord.sequence_number}
+                </Popup>
+              </Marker>
+            ))}
+          </Polyline>
         )}
       </MapContainer>
-
-      <ul>
-        {waypoints.map((wp, index) => (
-          <li key={index}>
-            {index + 1}: Latitude: {wp[0]}, Longitude: {wp[1]}
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };
 
 export default WaypointMap;
-
