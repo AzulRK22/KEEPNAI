@@ -1,11 +1,8 @@
-// pages/dashboard-inicio-e.js
-
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardMedia, Grid } from '@mui/material';
+import { Card, CardContent, Grid, Typography, Box, InputBase, IconButton, CircularProgress } from '@mui/material';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import AirIcon from '@mui/icons-material/Air';
 import OpacityIcon from '@mui/icons-material/Opacity';
-import { Box, Typography, InputBase, IconButton } from "@mui/material";
 import Sidebar from "../public/src/components/Sidebar";
 import styles from "../public/src/components/Dashboard.module.css";
 import Notification from "../public/src/components/Notifications";
@@ -14,11 +11,24 @@ import { getWeatherData } from '../public/src/services/api';
 const DashboardInicioE = () => {
   const [showNotification, setShowNotification] = useState(false);
   const [weatherData, setWeatherData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const weather = await getWeatherData();
-      setWeatherData(weather);
+      try {
+        const weather = await getWeatherData();
+        if (weather && weather.main && weather.wind) {
+          setWeatherData(weather);
+        } else {
+          throw new Error("Datos meteorológicos incompletos");
+        }
+      } catch (error) {
+        console.error("Error fetching weather data:", error);
+        setError("No se pudieron obtener los datos meteorológicos.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -65,7 +75,7 @@ const DashboardInicioE = () => {
           </div>
 
           <Typography variant="h4" gutterBottom>
-            Inicio
+            Home
           </Typography>
 
           <Box sx={{ mt: 2 }}>
@@ -78,44 +88,48 @@ const DashboardInicioE = () => {
           </Box>
 
           <Box sx={{ mt: 4 }}>
-        <Typography variant="h5" align='center' gutterBottom>
-          Condiciones Meteorológicas
-        </Typography>
-        {weatherData ? (
-          <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <WbSunnyIcon fontSize="large" />
-                <Typography variant="h6">Temperatura</Typography>
-                <Typography>{weatherData.main.temp}°C</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <AirIcon fontSize="large" />
-                <Typography variant="h6">Viento</Typography>
-                <Typography>{weatherData.wind.speed} m/s</Typography>
-                <Typography>{weatherData.wind.deg}°</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Card sx={{ height: '100%' }}>
-              <CardContent sx={{ textAlign: 'center' }}>
-                <OpacityIcon fontSize="large" />
-                <Typography variant="h6">Humedad</Typography>
-                <Typography>{weatherData.main.humidity}%</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        </Grid>
-        ) : (
-          <Typography>Cargando datos meteorológicos...</Typography>
-        )}
-      </Box>
+            <Typography variant="h5" align='center' gutterBottom>
+              Condiciones Meteorológicas
+            </Typography>
+            {loading ? (
+              <CircularProgress />
+            ) : error ? (
+              <Typography>{error}</Typography>
+            ) : weatherData && weatherData.main && weatherData.wind ? (
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card sx={{ height: '100%' }}>
+                    <CardContent sx={{ textAlign: 'center' }}>
+                      <WbSunnyIcon fontSize="large" />
+                      <Typography variant="h6">Temperatura</Typography>
+                      <Typography>{weatherData.main.temp}°C</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card sx={{ height: '100%' }}>
+                    <CardContent sx={{ textAlign: 'center' }}>
+                      <AirIcon fontSize="large" />
+                      <Typography variant="h6">Viento</Typography>
+                      <Typography>{weatherData.wind.speed} m/s</Typography>
+                      <Typography>{weatherData.wind.deg}°</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+                <Grid item xs={12} sm={6} md={4}>
+                  <Card sx={{ height: '100%' }}>
+                    <CardContent sx={{ textAlign: 'center' }}>
+                      <OpacityIcon fontSize="large" />
+                      <Typography variant="h6">Humedad</Typography>
+                      <Typography>{weatherData.main.humidity}%</Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              </Grid>
+            ) : (
+              <Typography>No se pudieron obtener los datos meteorológicos.</Typography>
+            )}
+          </Box>
         </Box>
       </div>
     </div>
@@ -123,6 +137,8 @@ const DashboardInicioE = () => {
 };
 
 export default DashboardInicioE;
+
+
 
 
 

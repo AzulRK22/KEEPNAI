@@ -3,8 +3,7 @@ import axios from 'axios';
 // Asegúrate de que esta URL esté correctamente definida en tu archivo .env
 const WEATHER_API_URL = 'https://api.openweathermap.org/data/2.5/weather';
 const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY; // Reemplaza con tu clave de API
-const FIRMS_API_URL = 'https://firms.modaps.eosdis.nasa.gov/api/viirs-c2';
-const NASA_API_KEY = process.env.NEXT_PUBLIC_NASA_API_KEY; // Reemplaza con tu clave de API
+
 
 
 export const getWeatherData = async () => {

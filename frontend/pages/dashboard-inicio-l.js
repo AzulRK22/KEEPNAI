@@ -1,36 +1,47 @@
-// pages/dashboard-inicio-l.js
-
 import React, { useState, useEffect } from 'react';
 import Map from '../public/src/components/Map';
-import 'leaflet/dist/leaflet.css'; // Importar estilos de Leaflet
-import { Box, Typography, InputBase, IconButton, CircularProgress } from "@mui/material";
+import 'leaflet/dist/leaflet.css';
+import { Box, Typography, InputBase, IconButton, CircularProgress, TextField, Button } from "@mui/material";
 import Sidebar2 from "../public/src/components/Sidebar2";
 import styles from "../public/src/components/Dashboard.module.css";
-import { getWeatherData } from '../public/src/services/api'; // Función para obtener datos del clima
-import { getSafetyRecommendations } from '../public/src/services/openai'; // Función para obtener recomendaciones
+import { getWeatherData2 } from '../public/src/services/api';
+import { getCoordinatesFromPostalCode } from '../public/src/services/geocode';
 
 const DashboardInicioL = () => {
-  const [weatherData, setWeatherData] = useState(null);
-  const [recommendations, setRecommendations] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [postalCode, setPostalCode] = useState(''); // Estado para almacenar el código postal
+  const [coordinates, setCoordinates] = useState(null);
+  const [weatherData2, setWeatherData2] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const weather = await getWeatherData();
-        setWeatherData(weather);
+    if (coordinates) {
+      const fetchWeather = async () => {
+        setLoading(true);
+        try {
+          const weather = await getWeatherData2(coordinates.lat, coordinates.lng);
+          setWeatherData2(weather);
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-        const safetyRecommendations = await getSafetyRecommendations(weather);
-        setRecommendations(safetyRecommendations);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      fetchWeather();
+    }
+  }, [coordinates]);
 
-    fetchData();
-  }, []);
+  const handleSearch = async () => {
+    setLoading(true);
+    try {
+      const coords = await getCoordinatesFromPostalCode(postalCode);
+      setCoordinates(coords);
+    } catch (error) {
+      console.error("Error fetching coordinates:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -59,42 +70,42 @@ const DashboardInicioL = () => {
           </div>
 
           <Typography variant="h4" gutterBottom>
-            Inicio
+            Home
           </Typography>
 
-          {/* Condiciones Meteorológicas Locales */}
-          <Box sx={{ mt: 2 }}>
+          {/* Campo separado para ingresar el código postal */}
+          <Box sx={{ mt: 4 }}>
             <Typography variant="h5" gutterBottom>
-              Condiciones Meteorológicas Locales
+              Ingresa tu Código Postal
             </Typography>
-            {loading ? (
-              <CircularProgress />
-            ) : weatherData ? (
-              <Box>
-                <Typography>Temperatura: {weatherData.temperature}°C</Typography>
-                <Typography>Velocidad del viento: {weatherData.windSpeed} km/h</Typography>
-                <Typography>Dirección del viento: {weatherData.windDirection}°</Typography>
-                <Typography>Humedad: {weatherData.humidity}%</Typography>
-              </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <TextField
+                label="Código Postal"
+                value={postalCode}
+                onChange={(e) => setPostalCode(e.target.value)}
+                variant="outlined"
+                sx={{ mr: 2 }}
+              />
+              <Button variant="contained" color="primary" onClick={handleSearch}>
+                Buscar
+              </Button>
+            </Box>
+          </Box>
+
+          {/* Mostrar el mapa */}
+          <Box sx={{ mt: 4 }}>
+            {coordinates ? (
+              <Map lat={coordinates.lat} lng={coordinates.lng} />
             ) : (
-              <Typography>No se pudieron obtener los datos meteorológicos.</Typography>
+              <Typography>Introduce tu código postal para ver tu ubicación en el mapa.</Typography>
             )}
           </Box>
 
-          {/* Recomendaciones de Seguridad */}
+          {/* Condiciones Meteorológicas Locales */}
           <Box sx={{ mt: 4 }}>
             <Typography variant="h5" gutterBottom>
-              Recomendaciones de Seguridad
+              Condiciones Meteorológicas Locales
             </Typography>
-            {loading ? (
-              <CircularProgress />
-            ) : recommendations ? (
-              <Box>
-                <Typography>{recommendations}</Typography>
-              </Box>
-            ) : (
-              <Typography>No se pudieron obtener las recomendaciones de seguridad.</Typography>
-            )}
           </Box>
         </Box>
       </div>
@@ -103,5 +114,6 @@ const DashboardInicioL = () => {
 };
 
 export default DashboardInicioL;
+
 
 

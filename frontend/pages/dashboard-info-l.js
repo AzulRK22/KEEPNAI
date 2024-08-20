@@ -39,7 +39,7 @@ const DashboardInformacionL = () => {
             </div>
           </div>
           <Typography variant="h4" gutterBottom>
-            Información
+            Information
           </Typography>
           {/* Puedes agregar más contenido aquí */}
         </Box>

@@ -25,7 +25,7 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-inicio-e')}
           >
             <img src="/icons/Home.svg" alt="Home Icon" className={styles.icon} />
-            <span className={styles.navText}>Inicio</span>
+            <span className={styles.navText}>Home</span>
           </button>
         </li>
         <li>
@@ -34,7 +34,7 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-incidentes-e')}
           >
             <img src="/icons/incidentes.svg" alt="Alert Icon" className={styles.icon} />
-            <span className={styles.navText}>Incidentes</span>
+            <span className={styles.navText}>Incidents</span>
           </button>
         </li>
         <li>
@@ -43,7 +43,7 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-recursos-e')}
           >
             <img src="/icons/recursos.svg" alt="Resources Icon" className={styles.icon} />
-            <span className={styles.navText}>Recursos</span>
+            <span className={styles.navText}>Resources</span>
           </button>
         </li>
         <li>
@@ -52,16 +52,16 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-monitoreo-e')}
           >
             <img src="/icons/monitoreo.svg" alt="Monitoring Icon" className={styles.icon} />
-            <span className={styles.navText}>Monitoreo</span>
+            <span className={styles.navText}>Monitoring</span>
           </button>
         </li>
         <li>
           <button 
-            className={`${styles.navItem} ${isActive('/dashboard-reportes-e') ? styles.active : ''}`}
-            onClick={() => handleNavigation('/dashboard-reportes-e')}
+            className={`${styles.navItem} ${isActive('/dashboard-chat-e') ? styles.active : ''}`}
+            onClick={() => handleNavigation('/dashboard-chat-e')}
           >
             <img src="/icons/Folder.svg" alt="Reports Icon" className={styles.icon} />
-            <span className={styles.navText}>Asistente Virtual</span>
+            <span className={styles.navText}>Virtual Assistant</span>
           </button>
         </li>
         <li>
@@ -70,7 +70,7 @@ const Sidebar = () => {
             onClick={() => handleNavigation('/dashboard-confi-e')}
           >
             <img src="/icons/Setting.svg" alt="Settings Icon" className={styles.icon} />
-            <span className={styles.navText}>Configuración</span>
+            <span className={styles.navText}>Configuration</span>
           </button>
         </li>
         <li>
@@ -79,7 +79,7 @@ const Sidebar = () => {
             onClick={() => router.push('/')}
           >
             <img src="/icons/salir.svg" alt="Logout Icon" className={styles.icon} />
-            <span className={styles.navText}>Salir</span>
+            <span className={styles.navText}>Logout</span>
           </button>
         </li>
       </ul>

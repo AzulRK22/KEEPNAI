@@ -25,7 +25,7 @@ const Sidebar2 = () => {
             onClick={() => handleNavigation('/dashboard-inicio-l')}
           >
             <img src="/icons/home.svg" alt="Home Icon" className={styles.icon} />
-            <span className={styles.navText}>Inicio</span>
+            <span className={styles.navText}>Home</span>
           </button>
         </li>
         <li>
@@ -34,7 +34,7 @@ const Sidebar2 = () => {
             onClick={() => handleNavigation('/dashboard-info-l')}
           >
             <img src="/icons/incidentes.svg" alt="Alert Icon" className={styles.icon} />
-            <span className={styles.navText}>Información</span>
+            <span className={styles.navText}>Information</span>
           </button>
         </li>
         <li>
@@ -43,7 +43,7 @@ const Sidebar2 = () => {
             onClick={() => handleNavigation('/dashboard-recu-l')}
           >
             <img src="/icons/recursos.svg" alt="Resources Icon" className={styles.icon} />
-            <span className={styles.navText}>Recursos</span>
+            <span className={styles.navText}>Resources</span>
           </button>
         </li>
         <li>
@@ -52,7 +52,7 @@ const Sidebar2 = () => {
             onClick={() => handleNavigation('/dashboard-seti-l')}
           >
             <img src="/icons/Setting.svg" alt="Settings Icon" className={styles.icon} />
-            <span className={styles.navText}>Configuración</span>
+            <span className={styles.navText}>Configuration</span>
           </button>
         </li>
         <li>
@@ -61,7 +61,7 @@ const Sidebar2 = () => {
             onClick={() => router.push('/')}
           >
             <img src="/icons/salir.svg" alt="Logout Icon" className={styles.icon} />
-            <span className={styles.navText}>Salir</span>
+            <span className={styles.navText}>Logout</span>
           </button>
         </li>
       </ul>

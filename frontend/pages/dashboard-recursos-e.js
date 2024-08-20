@@ -38,9 +38,8 @@ const DashboardRecursosE = () => {
             </div>
           </div>
           <Typography variant="h4" gutterBottom>
-            Recursos
+            Resources
           </Typography>
-          {/* Puedes agregar más contenido aquí */}
         </Box>
       </div>
     </div>

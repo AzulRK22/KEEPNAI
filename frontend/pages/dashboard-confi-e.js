@@ -32,9 +32,8 @@ const DashboardIConfiguracionE = () => {
             </div>
           </div>
           <Typography variant="h4" gutterBottom>
-            Configuración
+          Configuration
           </Typography>
-          {/* Puedes agregar más contenido aquí */}
         </Box>
       </div>
     </div>

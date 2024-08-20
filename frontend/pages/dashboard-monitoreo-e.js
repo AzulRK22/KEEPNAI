@@ -136,7 +136,7 @@ const DashboardMonitoreo = () => {
             </div>
           </div>
           <Typography variant="h4" gutterBottom>
-            Monitoreo
+            Monitoring
           </Typography>
 
           {loading ? (
