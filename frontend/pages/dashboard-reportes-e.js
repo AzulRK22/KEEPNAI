@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Papa from 'papaparse';
+import axios from 'axios';
 import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stepper, Step, StepLabel } from '@mui/material';
 import { styled } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,7 +8,7 @@ import FolderIcon from '@mui/icons-material/Folder';
 import RunCircleIcon from '@mui/icons-material/RunCircle';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import Sidebar from "../public/src/components/Sidebar";
-import Map from "../public/src/components/Map";
+import MapComponent from "../public/src/components/MapComponent";
 import styles from "../public/src/components/Dashboard.module.css";
 
 const Input = styled('input')({
@@ -17,8 +19,28 @@ const DashboardReportesE = () => {
   const [files, setFiles] = useState([]);
   const [scriptOutput, setScriptOutput] = useState('');
   const [activeStep, setActiveStep] = useState(0);
+  const [csvData, setCsvData] = useState([]);
 
   const steps = ['Upload Files', 'Run Python Script', 'Refresh Map'];
+
+  useEffect(() => {
+    // Cargar el archivo CSV al montar el componente
+    axios.get('http://127.0.0.1:5000/results/results_log.csv', { responseType: 'text' })
+      .then(response => {
+        Papa.parse(response.data, {
+          header: true,
+          complete: (results) => {
+            setCsvData(results.data);
+          },
+          error: (error) => {
+            console.error('Error parsing CSV:', error);
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching CSV:', error);
+      });
+  }, []);
 
   const handleFileSelect = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -32,15 +54,16 @@ const DashboardReportesE = () => {
 
   const runPythonScript = async () => {
     try {
-      const response = await fetch('/api/run-script', {
-        method: 'POST',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        setScriptOutput(data.result);
-      } else {
-        setScriptOutput(`Error: ${data.error}`);
+      const formData = new FormData();
+      files.forEach(file => formData.append('file', file));
+
+      const uploadResponse = await axios.post('/api/upload-files', formData);
+      if (uploadResponse.status !== 200) {
+        throw new Error('Error uploading files');
       }
+
+      const scriptResponse = await axios.post('/api/run-python-script');
+      setScriptOutput(scriptResponse.data.result);
     } catch (error) {
       setScriptOutput(`Error: ${error.message}`);
     }
@@ -48,7 +71,7 @@ const DashboardReportesE = () => {
   };
 
   const refreshMap = () => {
-    // Implement map refresh logic here
+    // Reset map logic if necessary
     console.log('Refreshing map...');
     setActiveStep(0);  // Reset to the first step after completing the process
   };
@@ -163,7 +186,31 @@ const DashboardReportesE = () => {
             </Table>
           </TableContainer>
 
-          <Map />
+          <Typography variant="h6" gutterBottom mt={4}>
+            CSV Data
+          </Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  {csvData[0] && Object.keys(csvData[0]).map((key) => (
+                    <TableCell key={key}>{key}</TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {csvData.map((row, index) => (
+                  <TableRow key={index}>
+                    {Object.values(row).map((value, idx) => (
+                      <TableCell key={idx}>{value}</TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <MapComponent />
         </Box>
       </div>
     </div>
