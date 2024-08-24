@@ -1,45 +1,47 @@
-import React, { useState } from 'react';
-import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stepper, Step, StepLabel } from '@mui/material';
-import { styled } from '@mui/system';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FolderIcon from '@mui/icons-material/Folder';
-import RunCircleIcon from '@mui/icons-material/RunCircle';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Papa from "papaparse";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Stepper,
+  Step,
+  StepLabel,
+  CircularProgress,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import DeleteIcon from "@mui/icons-material/Delete";
+import FolderIcon from "@mui/icons-material/Folder";
+import RunCircleIcon from "@mui/icons-material/RunCircle";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import Sidebar from "../public/src/components/Sidebar";
 import MapComponent from "../public/src/components/MapComponent";
 import styles from "../public/src/components/Dashboard.module.css";
 
-const Input = styled('input')({
-  display: 'none',
+const Input = styled("input")({
+  display: "none",
 });
 
 const DashboardReportesE = () => {
+  const [isLoading, setIsLoading] = useState(true);
   const [files, setFiles] = useState([]);
-  const [scriptOutput, setScriptOutput] = useState('');
-  const [runId, setRunId] = useState('');
-  const [filePath, setFilePath] = useState('');
+  const [scriptOutput, setScriptOutput] = useState("");
+  const [runId, setRunId] = useState("");
+  const [filePath, setFilePath] = useState("");
   const [activeStep, setActiveStep] = useState(0);
+  const [csvData, setCsvData] = useState([]);
+  const [error, setError] = useState("");
 
-  const steps = ['Upload Files', 'Run Python Script', 'Refresh Map'];
-
-  useEffect(() => {
-    // Cargar el archivo CSV al montar el componente
-    axios.get('http://127.0.0.1:5000/results/results_log.csv', { responseType: 'text' })
-      .then(response => {
-        Papa.parse(response.data, {
-          header: true,
-          complete: (results) => {
-            setCsvData(results.data);
-          },
-          error: (error) => {
-            console.error('Error parsing CSV:', error);
-          }
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching CSV:', error);
-      });
-  }, []);
+  const steps = ["Upload Files", "Run Python Script", "Refresh Map"];
 
   const handleFileSelect = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -50,7 +52,6 @@ const DashboardReportesE = () => {
   const handleDelete = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
-
   const runPythonScript = async () => {
     setIsLoading(true);
     setError('');
@@ -59,14 +60,27 @@ const DashboardReportesE = () => {
     setFilePath('');
 
     try {
-      const response = await fetch('/api/run-script', {
+      const response = await fetch('http://127.0.0.1:5000/run-script', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      if (response.ok) {
-        setScriptOutput(data.result);
+      
+      if (data.error) {
+        setError(`Server Error: ${data.error}`);
       } else {
-        setScriptOutput(`Error: ${data.error}`);
+        setScriptOutput(data.result);
+        setRunId(data.runId);
+        setFilePath(data.filePath);
+        setActiveStep(2);
       }
     } catch (error) {
       setError(`Error: ${error.message}`);
@@ -74,11 +88,35 @@ const DashboardReportesE = () => {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    axios
+      .get("http://127.0.0.1:5000/results/results_log.csv", {
+        responseType: "text",
+      })
+      .then((response) => {
+        Papa.parse(response.data, {
+          header: true,
+          complete: (results) => {
+            setCsvData(results.data);
+            setIsLoading(false);
+          },
+          error: (error) => {
+            console.error("Error parsing CSV:", error);
+            setIsLoading(false);
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching CSV:", error);
+        setIsLoading(false);
+      });
+  }, []);
+
 
   const refreshMap = () => {
     // Reset map logic if necessary
-    console.log('Refreshing map...');
-    setActiveStep(0);  // Reset to the first step after completing the process
+    console.log("Refreshing map...");
+    setActiveStep(0); // Reset to the first step after completing the process
   };
 
   return (
@@ -87,11 +125,11 @@ const DashboardReportesE = () => {
       <div className={styles.content}>
         <Box className={styles.mainContent} p={3}>
           {/* Header and search bar code remains the same */}
-          
+
           <Typography variant="h4" gutterBottom>
             Resources
           </Typography>
-          
+
           <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
             {steps.map((label) => (
               <Step key={label}>
@@ -99,7 +137,7 @@ const DashboardReportesE = () => {
               </Step>
             ))}
           </Stepper>
-          
+
           <Box sx={{ mb: 2 }}>
             <label htmlFor="file-upload">
               <Input
@@ -124,10 +162,12 @@ const DashboardReportesE = () => {
               color="secondary"
               sx={{ ml: 2, background: "#FB8C00" }}
               onClick={runPythonScript}
-              startIcon={isLoading ? <CircularProgress size={24} /> : <RunCircleIcon />}
+              startIcon={
+                isLoading ? <CircularProgress size={24} /> : <RunCircleIcon />
+              }
               disabled={activeStep !== 1 || isLoading}
             >
-              {isLoading ? 'Running...' : 'Run Python Script'}
+              {isLoading ? "Running..." : "Run Python Script"}
             </Button>
 
             <Button
@@ -143,24 +183,22 @@ const DashboardReportesE = () => {
           </Box>
 
           {error && (
-            <Paper sx={{ mt: 2, p: 2, bgcolor: '#ffebee' }}>
-              <Typography color="error">
-                {error}
-              </Typography>
+            <Paper sx={{ mt: 2, p: 2, bgcolor: "#ffebee" }}>
+              <Typography color="error">{error}</Typography>
             </Paper>
           )}
 
           {scriptOutput && (
-            <Paper sx={{ mt: 2, p: 2, maxHeight: 200, overflowY: 'auto' }}>
+            <Paper sx={{ mt: 2, p: 2, maxHeight: 200, overflowY: "auto" }}>
               <Typography variant="h6">Script Output:</Typography>
               <pre>{scriptOutput}</pre>
               {runId && (
-                <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+                <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
                   Run ID: {runId}
                 </Typography>
               )}
               {filePath && (
-                <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+                <Typography variant="body2" sx={{ mt: 1, fontWeight: "bold" }}>
                   Created File: {filePath}
                 </Typography>
               )}
@@ -197,9 +235,10 @@ const DashboardReportesE = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  {csvData[0] && Object.keys(csvData[0]).map((key) => (
-                    <TableCell key={key}>{key}</TableCell>
-                  ))}
+                  {csvData[0] &&
+                    Object.keys(csvData[0]).map((key) => (
+                      <TableCell key={key}>{key}</TableCell>
+                    ))}
                 </TableRow>
               </TableHead>
               <TableBody>
