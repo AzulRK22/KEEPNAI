@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
 from extensions import db, migrate
+import subprocess
 from models.models import Mission, Coordinate, ImageData
 from models.seeds import seed_missions  # Updated import statement
 import logging
@@ -194,6 +195,32 @@ def create_app():
             return jsonify({'message': bot_message})
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+        
+    @app.route('/run-script', methods=['POST'])
+    def run_script():
+        try:
+            # Run the script and capture its output
+            result = subprocess.run(['python', 'script.py'], capture_output=True, text=True, check=True)
+            
+            # Parse the output to extract the run ID
+            output_lines = result.stdout.split('\n')
+            run_id = next((line.split(': ')[1] for line in output_lines if line.startswith('Unique run ID:')), None)
+            
+            # Return the script's output and run ID
+            return jsonify({
+                'result': result.stdout,
+                'runId': run_id
+            })
+        except subprocess.CalledProcessError as e:
+            # If the script fails, return the error
+            return jsonify({'error': str(e), 'output': e.output}), 500
+        except Exception as e:
+            # Catch any other exceptions and return them as JSON
+            return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+        @app.errorhandler(Exception)
+        def handle_exception(e):
+            # Handle any uncaught exceptions and return them as JSON
+            return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
 
     @app.route('/')
     def hello_world():

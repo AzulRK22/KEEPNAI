@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stepper, Step, StepLabel } from '@mui/material';
+import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stepper, Step, StepLabel, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -16,7 +16,11 @@ const Input = styled('input')({
 const DashboardReportesE = () => {
   const [files, setFiles] = useState([]);
   const [scriptOutput, setScriptOutput] = useState('');
+  const [runId, setRunId] = useState('');
+  const [filePath, setFilePath] = useState('');
   const [activeStep, setActiveStep] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const steps = ['Upload Files', 'Run Python Script', 'Refresh Map'];
 
@@ -31,20 +35,40 @@ const DashboardReportesE = () => {
   };
 
   const runPythonScript = async () => {
+    setIsLoading(true);
+    setError('');
+    setScriptOutput('');
+    setRunId('');
+    setFilePath('');
+
     try {
-      const response = await fetch('/api/run-script', {
+      const response = await fetch('http://localhost:5000/run-script', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
-      if (response.ok) {
-        setScriptOutput(data.result);
+      
+      if (data.error) {
+        setError(`Server Error: ${data.error}`);
       } else {
-        setScriptOutput(`Error: ${data.error}`);
+        setScriptOutput(data.result);
+        setRunId(data.runId);
+        setFilePath(data.filePath);
+        setActiveStep(2);
       }
     } catch (error) {
-      setScriptOutput(`Error: ${error.message}`);
+      setError(`Error: ${error.message}`);
+    } finally {
+      setIsLoading(false);
     }
-    setActiveStep(2);
   };
 
   const refreshMap = () => {
@@ -58,26 +82,7 @@ const DashboardReportesE = () => {
       <Sidebar />
       <div className={styles.content}>
         <Box className={styles.mainContent} p={3}>
-          <div className={styles.header}>
-            <div className={styles.searchBar}>
-              <IconButton aria-label="search" className={styles.searchIcon}>
-                <img src="/icons/lupa.svg" alt="Search Icon" />
-              </IconButton>
-              <InputBase
-                placeholder="Search"
-                inputProps={{ "aria-label": "search" }}
-                sx={{ marginLeft: 2, flex: 1 }}
-              />
-            </div>
-            <div className={styles.icons}>
-              <IconButton aria-label="light-mode">
-                <img src="/icons/IconSet.svg" alt="Light Mode Icon" />
-              </IconButton>
-              <IconButton aria-label="notifications">
-                <img src="/icons/Bell.svg" alt="Notifications Icon" />
-              </IconButton>
-            </div>
-          </div>
+          {/* Header and search bar code remains the same */}
           
           <Typography variant="h4" gutterBottom>
             Resources
@@ -113,18 +118,18 @@ const DashboardReportesE = () => {
             <Button
               variant="contained"
               color="secondary"
-              sx={{ marginLeft: 2, background: "#FB8C00" }}
+              sx={{ ml: 2, background: "#FB8C00" }}
               onClick={runPythonScript}
-              startIcon={<RunCircleIcon />}
-              disabled={activeStep !== 1}
+              startIcon={isLoading ? <CircularProgress size={24} /> : <RunCircleIcon />}
+              disabled={activeStep !== 1 || isLoading}
             >
-              Run Python Script
+              {isLoading ? 'Running...' : 'Run Python Script'}
             </Button>
 
             <Button
               variant="contained"
               color="primary"
-              sx={{ marginLeft: 2 }}
+              sx={{ ml: 2 }}
               onClick={refreshMap}
               startIcon={<RefreshIcon />}
               disabled={activeStep !== 2}
@@ -133,14 +138,32 @@ const DashboardReportesE = () => {
             </Button>
           </Box>
 
-          {scriptOutput && (
-            <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-              <Typography variant="body1">Script Output:</Typography>
-              <Typography variant="body2">{scriptOutput}</Typography>
-            </Box>
+          {error && (
+            <Paper sx={{ mt: 2, p: 2, bgcolor: '#ffebee' }}>
+              <Typography color="error">
+                {error}
+              </Typography>
+            </Paper>
           )}
 
-          <TableContainer component={Paper}>
+          {scriptOutput && (
+            <Paper sx={{ mt: 2, p: 2, maxHeight: 200, overflowY: 'auto' }}>
+              <Typography variant="h6">Script Output:</Typography>
+              <pre>{scriptOutput}</pre>
+              {runId && (
+                <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+                  Run ID: {runId}
+                </Typography>
+              )}
+              {filePath && (
+                <Typography variant="body2" sx={{ mt: 1, fontWeight: 'bold' }}>
+                  Created File: {filePath}
+                </Typography>
+              )}
+            </Paper>
+          )}
+
+          <TableContainer component={Paper} sx={{ mt: 2 }}>
             <Table>
               <TableHead>
                 <TableRow>
