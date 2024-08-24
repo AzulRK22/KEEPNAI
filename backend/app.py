@@ -1,9 +1,8 @@
-import datetime
-import os
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify
 from flask_cors import CORS
 from config import Config
 from extensions import db, migrate
+import subprocess
 from models.models import Mission, Coordinate, ImageData
 from models.seeds import seed_missions  # Updated import statement
 import logging
@@ -17,7 +16,6 @@ def create_app():
     app.config.from_object(Config)
     
     CORS(app)
-
     
     db.init_app(app)
     migrate.init_app(app, db)
@@ -233,4 +231,4 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
