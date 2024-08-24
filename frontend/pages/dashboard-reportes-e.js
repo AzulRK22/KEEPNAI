@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import { Box, Typography, IconButton, InputBase, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Stepper, Step, StepLabel } from '@mui/material';
 import { styled } from '@mui/system';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FolderIcon from '@mui/icons-material/Folder';
-import RunCircleIcon from '@mui/icons-material/RunCircle'; // Icono para ejecutar el script
+import RunCircleIcon from '@mui/icons-material/RunCircle';
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Sidebar from "../public/src/components/Sidebar";
 import Map from "../public/src/components/Map";
 import styles from "../public/src/components/Dashboard.module.css";
@@ -15,10 +16,14 @@ const Input = styled('input')({
 const DashboardReportesE = () => {
   const [files, setFiles] = useState([]);
   const [scriptOutput, setScriptOutput] = useState('');
+  const [activeStep, setActiveStep] = useState(0);
+
+  const steps = ['Upload Files', 'Run Python Script', 'Refresh Map'];
 
   const handleFileSelect = (event) => {
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    setActiveStep(1);
   };
 
   const handleDelete = (index) => {
@@ -39,6 +44,13 @@ const DashboardReportesE = () => {
     } catch (error) {
       setScriptOutput(`Error: ${error.message}`);
     }
+    setActiveStep(2);
+  };
+
+  const refreshMap = () => {
+    // Implement map refresh logic here
+    console.log('Refreshing map...');
+    setActiveStep(0);  // Reset to the first step after completing the process
   };
 
   return (
@@ -66,49 +78,69 @@ const DashboardReportesE = () => {
               </IconButton>
             </div>
           </div>
+          
           <Typography variant="h4" gutterBottom>
             Resources
           </Typography>
           
-          {/* Botón para cargar archivos */}
-          <label htmlFor="file-upload">
-            <Input
-              id="file-upload"
-              type="file"
-              multiple
-              onChange={handleFileSelect}
-            />
+          <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+          
+          <Box sx={{ mb: 2 }}>
+            <label htmlFor="file-upload">
+              <Input
+                id="file-upload"
+                type="file"
+                multiple
+                onChange={handleFileSelect}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                startIcon={<FolderIcon />}
+                disabled={activeStep !== 0}
+              >
+                Upload Files
+              </Button>
+            </label>
+
+            <Button
+              variant="contained"
+              color="secondary"
+              sx={{ marginLeft: 2, background: "#FB8C00" }}
+              onClick={runPythonScript}
+              startIcon={<RunCircleIcon />}
+              disabled={activeStep !== 1}
+            >
+              Run Python Script
+            </Button>
+
             <Button
               variant="contained"
               color="primary"
-              component="span"
-              startIcon={<FolderIcon />}
+              sx={{ marginLeft: 2 }}
+              onClick={refreshMap}
+              startIcon={<RefreshIcon />}
+              disabled={activeStep !== 2}
             >
-              Upload Files
+              Refresh Map
             </Button>
-          </label>
+          </Box>
 
-          {/* Botón para ejecutar el script de Python */}
-          <Button
-            variant="contained"
-            color="secondary"
-            sx={{ marginLeft: 2, background: "#FB8C00" }}
-            onClick={runPythonScript}
-            startIcon={<RunCircleIcon />}
-          >
-            Run Python Script
-          </Button>
-
-          {/* Mostrar salida del script */}
           {scriptOutput && (
-            <Box sx={{ marginTop: 2 }}>
+            <Box sx={{ marginTop: 2, marginBottom: 2 }}>
               <Typography variant="body1">Script Output:</Typography>
               <Typography variant="body2">{scriptOutput}</Typography>
             </Box>
           )}
 
-          {/* Tabla para mostrar archivos */}
-          <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+          <TableContainer component={Paper}>
             <Table>
               <TableHead>
                 <TableRow>
@@ -131,7 +163,6 @@ const DashboardReportesE = () => {
             </Table>
           </TableContainer>
 
-          {/* Mapa */}
           <Map />
         </Box>
       </div>
@@ -140,5 +171,3 @@ const DashboardReportesE = () => {
 };
 
 export default DashboardReportesE;
-
-
