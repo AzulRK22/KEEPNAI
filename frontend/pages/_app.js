@@ -1,5 +1,6 @@
 import Head from 'next/head'; // Asegúrate de importar Head
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import 'leaflet/dist/leaflet.css';
 import CssBaseline from '@mui/material/CssBaseline';
 
 

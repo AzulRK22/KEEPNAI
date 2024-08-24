@@ -39,11 +39,11 @@ const Sidebar = () => {
         </li>
         <li>
           <button 
-            className={`${styles.navItem} ${isActive('/dashboard-recursos-e') ? styles.active : ''}`}
-            onClick={() => handleNavigation('/dashboard-recursos-e')}
+            className={`${styles.navItem} ${isActive('/dashboard-reportes-e') ? styles.active : ''}`}
+            onClick={() => handleNavigation('/dashboard-reportes-e')}
           >
-            <img src="/icons/recursos.svg" alt="Resources Icon" className={styles.icon} />
-            <span className={styles.navText}>Resources</span>
+            <img src="/icons/folder.svg" alt="Resources Icon" className={styles.icon} />
+            <span className={styles.navText}>Reports</span>
           </button>
         </li>
         <li>
