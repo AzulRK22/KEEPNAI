@@ -1,12 +1,15 @@
-from flask import Flask, jsonify
+import datetime
+import os
+import traceback
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from config import Config
 from extensions import db, migrate
 import subprocess
-from models.models import Mission, Coordinate, ImageData
-from models.seeds import seed_missions  # Updated import statement
+from models.models import Mission, Coordinate, ImageData, generate_centered_search_waypoints
+from models.seeds import seed_missions
 import logging
-logging.basicConfig(level=logging.DEBUG)
+
 
 #import openai
 
@@ -196,31 +199,32 @@ def create_app():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
         
-    @app.route('/run-script', methods=['POST'])
+    @app.route('/run-script', methods=['POST','GET'])
     def run_script():
         try:
-            # Run the script and capture its output
-            result = subprocess.run(['python', 'script.py'], capture_output=True, text=True, check=True)
+            # Ejecuta el script y captura la salida
+            result = subprocess.run(['python3', 'script.py'], capture_output=True, text=True, check=True)
             
-            # Parse the output to extract the run ID
+            # Analiza la salida para extraer el ID de ejecución
             output_lines = result.stdout.split('\n')
             run_id = next((line.split(': ')[1] for line in output_lines if line.startswith('Unique run ID:')), None)
             
-            # Return the script's output and run ID
+            # Retorna la salida del script y el ID de ejecución
             return jsonify({
                 'result': result.stdout,
                 'runId': run_id
             })
         except subprocess.CalledProcessError as e:
-            # If the script fails, return the error
+            # Si el script falla, retorna el error
             return jsonify({'error': str(e), 'output': e.output}), 500
         except Exception as e:
-            # Catch any other exceptions and return them as JSON
+            # Captura cualquier otra excepción y retornala como JSON
             return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
-        @app.errorhandler(Exception)
-        def handle_exception(e):
-            # Handle any uncaught exceptions and return them as JSON
-            return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+        
+    @app.route('/results/<path:filename>', methods=['GET'])
+    def reload_file(filename):
+            return send_from_directory('results', filename)
+
 
     @app.route('/')
     def hello_world():

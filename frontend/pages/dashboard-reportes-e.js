@@ -45,25 +45,30 @@ const DashboardReportesE = () => {
 
   const handleFileSelect = (event) => {
     const selectedFiles = Array.from(event.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    // Filtrar archivos duplicados
+    const filteredFiles = selectedFiles.filter(
+      (newFile) => !files.some((file) => file.name === newFile.name)
+    );
+    setFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
     setActiveStep(1);
   };
 
   const handleDelete = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+
   const runPythonScript = async () => {
     setIsLoading(true);
-    setError('');
-    setScriptOutput('');
-    setRunId('');
-    setFilePath('');
+    setError("");
+    setScriptOutput("");
+    setRunId("");
+    setFilePath("");
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/run-script', {
-        method: 'POST',
+      const response = await fetch("http://127.0.0.1:5000/run-script", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({}),
       });
@@ -73,7 +78,7 @@ const DashboardReportesE = () => {
       }
 
       const data = await response.json();
-      
+
       if (data.error) {
         setError(`Server Error: ${data.error}`);
       } else {
@@ -88,6 +93,7 @@ const DashboardReportesE = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     axios
       .get("http://127.0.0.1:5000/results/results_log.csv", {
@@ -110,13 +116,12 @@ const DashboardReportesE = () => {
         console.error("Error fetching CSV:", error);
         setIsLoading(false);
       });
-  }, []);
-
+  }, []); // Dependencia vacía para que se ejecute solo al montar el componente
 
   const refreshMap = () => {
-    // Reset map logic if necessary
+    // Reiniciar la lógica del mapa si es necesario
     console.log("Refreshing map...");
-    setActiveStep(0); // Reset to the first step after completing the process
+    setActiveStep(0); // Reiniciar al primer paso después de completar el proceso
   };
 
   return (
