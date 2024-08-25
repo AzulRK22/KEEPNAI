@@ -8,6 +8,10 @@ import {
 import Sidebar from "../public/src/components/Sidebar";
 import styles from "../public/src/components/Dashboard.module.css";
 
+
+import StandaloneMapComponent from "../public/src/components/HistoricMap";
+
+
 const DashboardIncidentesE = () => {
   return (
     <div className={styles.container}>
@@ -37,6 +41,7 @@ const DashboardIncidentesE = () => {
           <Typography variant="h4" gutterBottom>
             Incidents
           </Typography>
+          <StandaloneMapComponent></StandaloneMapComponent>
         </Box>
       </div>
     </div>
