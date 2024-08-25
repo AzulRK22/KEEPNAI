@@ -28,29 +28,23 @@ def create_app():
         seed_missions(app, db)
 
 
-    @app.route('/upload_image', methods=['POST'])
-    def upload_image():
+    # Asegúrate de que la carpeta de uploads existe
+    UPLOAD_FOLDER = 'uploads'
+    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+    @app.route('/upload', methods=['POST'])
+    def upload_file():
         if 'file' not in request.files:
-            return jsonify({"error": "No file part"}), 400
+            return jsonify({"error": "No file part in the request"}), 400
+        
         file = request.files['file']
         if file.filename == '':
             return jsonify({"error": "No selected file"}), 400
         
         if file:
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-
-            new_image_data = ImageData(
-                filename=filename,
-                latitude=float(request.form['latitude']),
-                longitude=float(request.form['longitude']),
-                classification=request.form['classification']
-            )
-            db.session.add(new_image_data)
-            db.session.commit()
-
-            return jsonify({"message": "Image uploaded successfully", "id": new_image_data.id}), 201
+            filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(filepath)
+            return jsonify({"message": "File uploaded successfully", "filePath": filepath}), 200
 
     @app.route('/image_data', methods=['GET'])
     def get_image_data():

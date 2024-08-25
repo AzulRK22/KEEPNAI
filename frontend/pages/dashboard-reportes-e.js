@@ -43,15 +43,34 @@ const DashboardReportesE = () => {
 
   const steps = ["Upload Files", "Run Python Script", "Refresh Map"];
 
-  const handleFileSelect = (event) => {
+  const handleFileSelect = async (event) => {
     const selectedFiles = Array.from(event.target.files);
-    // Filtrar archivos duplicados
     const filteredFiles = selectedFiles.filter(
       (newFile) => !files.some((file) => file.name === newFile.name)
     );
     setFiles((prevFiles) => [...prevFiles, ...filteredFiles]);
+
+    for (let file of filteredFiles) {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      try {
+        const response = await axios.post("http://127.0.0.1:5000/upload", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.log("File uploaded successfully:", response.data.filePath);
+        setFilePath(response.data.filePath); // Guarda el path del archivo
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        setError("Error uploading file: " + error.message);
+      }
+    }
+
     setActiveStep(1);
-  };
+};
+
 
   const handleDelete = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
