@@ -30,11 +30,11 @@ const Sidebar = () => {
         </li>
         <li>
           <button 
-            className={`${styles.navItem} ${isActive('/dashboard-incidentes-e') ? styles.active : ''}`}
-            onClick={() => handleNavigation('/dashboard-incidentes-e')}
+            className={`${styles.navItem} ${isActive('/dashboard-monitoreo-e') ? styles.active : ''}`}
+            onClick={() => handleNavigation('/dashboard-monitoreo-e')}
           >
-            <img src="/icons/incidentes.svg" alt="Alert Icon" className={styles.icon} />
-            <span className={styles.navText}>Incidents</span>
+            <img src="/icons/monitoreo.svg" alt="Monitoring Icon" className={styles.icon} />
+            <span className={styles.navText}>Monitoring</span>
           </button>
         </li>
         <li>
@@ -48,11 +48,11 @@ const Sidebar = () => {
         </li>
         <li>
           <button 
-            className={`${styles.navItem} ${isActive('/dashboard-monitoreo-e') ? styles.active : ''}`}
-            onClick={() => handleNavigation('/dashboard-monitoreo-e')}
+            className={`${styles.navItem} ${isActive('/dashboard-incidentes-e') ? styles.active : ''}`}
+            onClick={() => handleNavigation('/dashboard-incidentes-e')}
           >
-            <img src="/icons/monitoreo.svg" alt="Monitoring Icon" className={styles.icon} />
-            <span className={styles.navText}>Monitoring</span>
+            <img src="/icons/incidentes.svg" alt="Alert Icon" className={styles.icon} />
+            <span className={styles.navText}>Incidents</span>
           </button>
         </li>
         <li>
