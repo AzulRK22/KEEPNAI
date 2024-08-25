@@ -1,26 +1,26 @@
 # Fire Eye Dashboard
 
-**Fire Eye Dashboard** es una aplicación web diseñada para la gestión y monitoreo de emergencias, específicamente incendios, por parte de personal de emergencia y usuarios locales. La aplicación permite la visualización de incidentes, recursos disponibles, condiciones meteorológicas y más, todo en una interfaz intuitiva y fácil de usar.
+**Fire Eye Dashboard** is a web application designed for the management and monitoring of emergencies, specifically fires, by emergency personnel and local users. The application allows visualization of incidents, available resources, weather conditions, and more, all in an intuitive and easy-to-use interface.
 
-## Tabla de Contenidos
+## Table of Contents
 
-- [Características](#características)
-- [Tecnologías Utilizadas](#tecnologías-utilizadas)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Contribuir](#contribuir)
-- [Licencia](#licencia)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Características
+## Features
 
-- **Mapa interactivo:** Visualización de incendios, áreas afectadas y recursos desplegados.
-- **Monitoreo en por drones:** Activar el algoritmo para buscar la ruta que tomara el dron
-- **Loading data :** Subir informacion recabada por el dron para determinar si hay incendios
-- **Reportes:** Generación de reportes detallados para análisis post-incidente. (Planeado para el futuro)
-- **Configuración personalizada:** Ajustes personalizados para usuarios de emergencia y locales. (Planeado para el futuro)
+- **Interactive map:** Visualization of fires, affected areas, and deployed resources.
+- **Drone monitoring:** Activate the algorithm to find the route the drone will take.
+- **Data loading:** Upload information collected by the drone to determine if there are fires.
+- **Reports:** Generation of detailed reports for post-incident analysis. (Planned for the future)
+- **Custom configuration:** Personalized settings for emergency and local users. (Planned for the future)
 
-## Tecnologías Utilizadas
+## Technologies Used
 
 - **Frontend:**
   - [Next.js](https://nextjs.org/)
@@ -30,79 +30,89 @@
   - [Google Fonts](https://fonts.google.com/)
 
 - **Backend:**
-  - [Flask](https://flask.palletsprojects.com/) 
+  - [Flask](https://flask.palletsprojects.com/)
 
-- **Otros:**
-  - [Node.js](https://nodejs.org/) - 
+- **Others:**
+  - [Node.js](https://nodejs.org/)
   - [Git](https://git-scm.com/)
   - [GitHub](https://github.com/)
 
-## Estructura del Proyecto
+## Project Structure
 
-El proyecto está dividido en dos principales secciones:
+The project is divided into two main sections:
 
-- **Frontend:** En el directorio `frontend`, se encuentra la aplicación Next.js que incluye todos los componentes de la interfaz de usuario.
-- **Backend (Futuro):** En el directorio `backend`, se planea incluir la API en Flask para la gestión de datos y la lógica del servidor.
+- **Frontend:** In the `frontend` directory, you'll find the Next.js application that includes all the user interface components.
+- **Backend (Future):** In the `backend` directory, there are plans to include the Flask API for data management and server logic.
 
-## Instalación
+## Installation
 
-Sigue estos pasos para configurar el proyecto en tu entorno local:
+Follow these steps to set up the project in your local environment:
 
-1. **Clona el repositorio:**
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/AzulRK22/fire-eye-dashboard.git
    cd fire-eye-dashboard
+   ```
 
+2. **Set up the frontend:**
 
-2. **Configura el frontend:**
-   
-    cd frontend
-    npm install
-   
-3. **Configura el backend:**
-   
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+3. **Set up the backend:**
+
+   ```bash
    cd ../backend
    python -m venv venv
    source venv/bin/activate
    pip install -r requirements.txt
    flask db upgrade
+   ```
 
-   
-4. **Inicia el frontend:**
-   
+4. **Start the frontend:**
+
+   ```bash
    cd ../frontend
    npm run dev
-   
-5. **Inicia el backend:**
-   
+   ```
+
+5. **Start the backend:**
+
+   ```bash
    flask run
    flask --app app.py --debug run
-   
-6. **Accede a la aplicación:**
+   ```
 
-   Abre tu navegador y ve a http://localhost:3000 para ver la aplicación en funcionamiento.
+6. **Access the application:**
 
-## Uso
+   Open your browser and go to http://localhost:3000 to see the application running.
 
-Pantalla Principal: Desde aquí, los usuarios pueden elegir identificarse como personal de emergencia o usuario local para acceder al dashboard correspondiente.
-Dashboard del Personal de Emergencia: Visualiza incidentes, recursos disponibles, monitorea en tiempo real y genera reportes.
-Dashboard del Usuario Local: Accede a reportes y configuraciones personalizadas para usuarios locales.
+## Usage
 
-## Contribuir
+Main Screen: From here, users can choose to identify themselves as emergency personnel or local users to access the corresponding dashboard.
+Emergency Personnel Dashboard: Visualize incidents, available resources, monitor in real-time, and generate reports.
+Local User Dashboard: Access reports and customized settings for local users.
 
-Si deseas contribuir al proyecto, sigue estos pasos:
+## Contributing
 
-Haz un fork del repositorio.
-Crea una nueva rama (git checkout -b feature/nueva-funcionalidad).
-Realiza tus cambios y haz commit (git commit -am 'Añadir nueva funcionalidad').
-Empuja tu rama (git push origin feature/nueva-funcionalidad).
-Abre un Pull Request.
+If you wish to contribute to the project, follow these steps:
 
-## Licencia
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/new-functionality`).
+3. Make your changes and commit (`git commit -am 'Add new functionality'`).
+4. Push your branch (`git push origin feature/new-functionality`).
+5. Open a Pull Request.
 
+## Screenshots
 
-Este `README.md` debería cubrir todos los aspectos básicos de tu proyecto y ser útil tanto para otros desarrolladores que quieran contribuir como para cualquier persona que desee entender y utilizar la aplicación.  
+### Analysis
+![Analysis Screenshot](sample_data/analysis.png)
 
-   
+### Monitoring
+![Monitoring Screenshot](sample_data/monitoring.png)
 
+### Virtual Assistant
+![Virtual Assistant Screenshot](sample_data/virtual_assistant.png)
