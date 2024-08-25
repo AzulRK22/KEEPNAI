@@ -191,7 +191,7 @@ const DashboardReportesE = () => {
               }
               disabled={activeStep !== 1 || isLoading}
             >
-              {isLoading ? "Running..." : "Run Python Script"}
+              {isLoading ? "Running..." : "Run"}
             </Button>
 
             <Button
