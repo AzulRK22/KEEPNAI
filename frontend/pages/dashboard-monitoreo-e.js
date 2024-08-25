@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import FlightTakeoffIcon from '@mui/icons-material/FlightTakeoff';
 import axios from "axios";
 import {
-  Container,
   Box,
   Typography,
   InputBase,
@@ -26,9 +25,9 @@ const DashboardMonitoreo = () => {
   // Drone configuration states
   const [altitude, setAltitude] = useState(0);
   const [speed, setSpeed] = useState(0);
-  const [mode, setMode] = useState("");
-  const [visionRange, setVisionRange] = useState(0);
-  const [flightTime, setFlightTime] = useState(0);
+  const [mode, setMode] = useState("low");
+  const [visionRange, setVisionRange] = useState(50);
+  const [flightTime, setFlightTime] = useState(5);
 
   useEffect(() => {
     const fetchMissionsData = async () => {
@@ -36,15 +35,10 @@ const DashboardMonitoreo = () => {
       setError(null);
       try {
         const response = await axios.get("http://127.0.0.1:5000/api/missions");
-        console.log("API response:", response.data);
-
         if (response.data && Array.isArray(response.data.missions)) {
           setMissions(response.data.missions);
         } else {
-          console.error(
-            "API did not return an array of missions:",
-            response.data
-          );
+          console.error("API did not return an array of missions:", response.data);
           setMissions([]);
         }
       } catch (error) {
@@ -78,9 +72,7 @@ const DashboardMonitoreo = () => {
       if (response.data.success) {
         alert("Route generated successfully!");
         // Optionally, you can fetch updated missions data here
-        const updatedResponse = await axios.get(
-          "http://127.0.0.1:5000/api/missions"
-        );
+        const updatedResponse = await axios.get("http://127.0.0.1:5000/api/missions");
         setMissions(updatedResponse.data.missions || []);
       } else {
         console.error("Error generating route:", response.data.message);
@@ -90,23 +82,25 @@ const DashboardMonitoreo = () => {
     }
   };
 
-  const handleDownloadRoute = async (route) => {
+  const handleDownloadRoute = async () => {
     try {
       const response = await axios.get(
-        `http://127.0.0.1:5000/download_wp/${route.id}`,
+        `http://127.0.0.1:5000/get_wp_file`,
         {
-          responseType: "blob",
+          responseType: 'blob',
         }
       );
+      
       const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute("download", `route_${route.id}.wp`);
+      link.setAttribute('download', 'mission.waypoints');
       document.body.appendChild(link);
       link.click();
       link.remove();
     } catch (error) {
       console.error("Error downloading WP file:", error);
+      alert("Failed to download the file. Please try again.");
     }
   };
 
@@ -184,10 +178,10 @@ const DashboardMonitoreo = () => {
                   onChange={(e) => setMode(e.target.checked ? "high" : "low")}
                   sx={{
                     "& .MuiSwitch-switchBase": {
-                      color: "#FB8C00", // Color when the switch is off
+                      color: "#FB8C00",
                     },
                     "& .MuiSwitch-switchBase.Mui-checked": {
-                      color: "#FB8C00", // Color when the switch is on
+                      color: "#FB8C00",
                     },
                   }}
                 />

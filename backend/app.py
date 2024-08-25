@@ -1,7 +1,7 @@
 import datetime
 import os
 import traceback
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, current_app
 from flask_cors import CORS
 from config import Config
 from extensions import db, migrate
@@ -224,8 +224,31 @@ def create_app():
     @app.route('/results/<path:filename>', methods=['GET'])
     def reload_file(filename):
             return send_from_directory('results', filename)
+    
+    @app.route('/get_wp_file', methods=['GET'])
+    def get_wp_file():
+        try:
+            file_directory = 'datasets'
+            file_name = 'mission_valparaiso.waypoints'
+            
+            # Debug information
+            current_dir = os.getcwd()
+            full_path = os.path.join(current_dir, file_directory, file_name)
+            file_exists = os.path.exists(full_path)
+            
+            current_app.logger.info(f"Current working directory: {current_dir}")
+            current_app.logger.info(f"Full file path: {full_path}")
+            current_app.logger.info(f"File exists: {file_exists}")
+            
+            if not file_exists:
+                return jsonify({"error": f"File not found at {full_path}"})
+            
+            return send_from_directory(directory=file_directory, path=file_name, as_attachment=True)
+        except Exception as e:
+            current_app.logger.error(f"Error: {str(e)}")
+            return jsonify({"error": str(e)})
 
-
+    
     @app.route('/')
     def hello_world():
         return 'dsf, World!'
