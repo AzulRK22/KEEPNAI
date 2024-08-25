@@ -30,6 +30,15 @@ const Sidebar2 = () => {
         </li>
         <li>
           <button 
+            className={`${styles.navItem} ${isActive('/dashboard-chat-l') ? styles.active : ''}`}
+            onClick={() => handleNavigation('/dashboard-chat-l')}
+          >
+            <img src="/icons/Folder.svg" alt="Reports Icon" className={styles.icon} />
+            <span className={styles.navText}>Virtual Assistant</span>
+          </button>
+        </li>
+        <li>
+          <button 
             className={`${styles.navItem} ${isActive('/dashboard-info-l') ? styles.active : ''}`}
             onClick={() => handleNavigation('/dashboard-info-l')}
           >
