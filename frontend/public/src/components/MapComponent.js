@@ -21,6 +21,8 @@ const Popup = dynamic(
   { ssr: false }
 );
 
+const path_results = "uploads/"
+
 // Use a functional component for the map contents
 const MapContents = ({ markers, mapCenter }) => {
   const L = require('leaflet');
@@ -71,7 +73,7 @@ const MapComponent = () => {
             const data = results.data
               .filter(row => row.length === 3 && !isNaN(parseFloat(row[1])) && !isNaN(parseFloat(row[2])))
               .map(row => ({
-                imagePath: row[0],
+                imagePath: path_results + row[0], // path+row[0]
                 lat: parseFloat(row[1]),
                 lon: parseFloat(row[2])
               }));
