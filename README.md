@@ -1,6 +1,6 @@
-# Fire Eye Dashboard
+# KEEPNAI Dashboard
 
-**Fire Eye Dashboard** is a web application designed for the management and monitoring of emergencies, specifically fires, by emergency personnel and local users. The application allows visualization of incidents, available resources, weather conditions, and more, all in an intuitive and easy-to-use interface.
+**KEEPNAI Dashboard** is an application designed for the management and monitoring of emergencies, specifically fires, by emergency personnel and local users. The application allows visualization of incidents, available resources, weather conditions, and more, all in an intuitive and easy-to-use interface.
 
 ## Table of Contents
 
