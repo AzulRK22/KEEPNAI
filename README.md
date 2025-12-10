@@ -125,15 +125,9 @@ Choose user role:
 Add your images:
 
 ```
-
-### Analysis
-![Analysis Screenshot](sample_data/analysis.png)
-
-### Monitoring
-![Monitoring Screenshot](sample_data/monitoring.png)
-
-### Virtual Assistant
-![Virtual Assistant Screenshot](sample_data/virtual_assistant.png)
+![Analysis](sample_data/analysis.png)
+![Monitoring](sample_data/monitoring.png)
+![Assistant](sample_data/virtual_assistant.png)
 ```
 
 ---
