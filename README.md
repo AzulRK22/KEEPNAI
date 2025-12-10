@@ -119,16 +119,11 @@ Choose user role:
 - (Future) Custom alert preferences  
 
 ---
-
 ## 🖼 Screenshots
 
-Add your images:
-
-```
-![Analysis](sample_data/analysis.png)
-![Monitoring](sample_data/monitoring.png)
-![Assistant](sample_data/virtual_assistant.png)
-```
+![Analysis](./sample_data/analysis.png)
+![Monitoring](./sample_data/monitoring.png)
+![Assistant](./sample_data/virtual_assistant.png)
 
 ---
 
