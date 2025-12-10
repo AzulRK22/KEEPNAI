@@ -1,112 +1,130 @@
 # KEEPNAI Dashboard
 
-**KEEPNAI Dashboard** is an application designed for the management and monitoring of emergencies, specifically fires, by emergency personnel and local users. The application allows visualization of incidents, available resources, weather conditions, and more, all in an intuitive and easy-to-use interface.
+KEEPNAI Dashboard is an emergency-management and fire-monitoring application designed for both emergency personnel and local users.  
+It provides real-time visualization of incidents, resource allocation, drone-based monitoring, and environmental conditions — all through an intuitive, modern interface.
 
-## Table of Contents
+---
 
-- [Features](#features)
-- [Technologies Used](#technologies-used)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+## 📌 Features
 
-## Features
+### 🔥 Real-Time Incident Monitoring
+- Interactive map displaying active fires, impacted areas, and deployed resources.
+- Weather and environmental data to support decision-making.
 
-- **Interactive map:** Visualization of fires, affected areas, and deployed resources.
-- **Drone monitoring:** Activate the algorithm to find the route the drone will take.
-- **Data loading:** Upload information collected by the drone to determine if there are fires.
-- **Reports:** Generation of detailed reports for post-incident analysis. (Planned for the future)
-- **Custom configuration:** Personalized settings for emergency and local users. (Planned for the future)
+### 🚁 Drone Route Analysis
+- Trigger a built-in algorithm to compute optimal drone flight paths.
+- Upload drone-collected data to detect fire presence and update the dashboard.
 
-## Technologies Used
+### 📊 Data & Reports
+- Upload structured drone datasets for automated incident classification.
+- Future: detailed reporting tools for post-incident analysis.
 
-- **Frontend:**
-  - [Next.js](https://nextjs.org/)
-  - [React.js](https://reactjs.org/)
-  - [Styled-Components](https://styled-components.com/)
-  - [React Router](https://reactrouter.com/)
-  - [Google Fonts](https://fonts.google.com/)
+### ⚙️ User Profiles
+- Emergency personnel dashboard with advanced monitoring tools.
+- Local user dashboard focused on reports and simplified alerts.
+- Future: custom preferences and configuration settings.
 
-- **Backend:**
-  - [Flask](https://flask.palletsprojects.com/)
+---
 
-- **Others:**
-  - [Node.js](https://nodejs.org/)
-  - [Git](https://git-scm.com/)
-  - [GitHub](https://github.com/)
+## 🧰 Technologies Used
 
-## Project Structure
+### Frontend
+- Next.js
+- React
+- Styled-Components
+- React Router
+- Google Fonts
 
-The project is divided into two main sections:
+### Backend
+- Flask
 
-- **Frontend:** In the `frontend` directory, you'll find the Next.js application that includes all the user interface components.
-- **Backend (Future):** In the `backend` directory, there are plans to include the Flask API for data management and server logic.
+### Other Tools
+- Node.js  
+- Git / GitHub  
+- Python virtual environments  
 
-## Installation
+---
 
-Follow these steps to set up the project in your local environment:
+## 📂 Project Structure
 
-1. **Clone the repository:**
+```
+KEEPNAI/
+├── frontend/        # Next.js UI (dashboards, maps, views)
+├── backend/         # Flask API (data ingestion, detection, routing) - WIP
+├── sample_data/     # Drone datasets for testing algorithms
+└── README.md
+```
 
-   ```bash
-   git clone https://github.com/AzulRK22/fire-eye-dashboard.git
-   cd fire-eye-dashboard
-   ```
+---
 
-2. **Set up the frontend:**
+## 🛠 Installation
 
-   ```bash
-   cd frontend
-   npm install
-   ```
+### 1. Clone the repository
 
-3. **Set up the backend:**
+```bash
+git clone https://github.com/AzulRK22/fire-eye-dashboard.git
+cd fire-eye-dashboard
+```
 
-   ```bash
-   cd ../backend
-   python -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   flask db upgrade
-   ```
+### 2. Frontend Setup
 
-4. **Start the frontend:**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-   ```bash
-   cd ../frontend
-   npm run dev
-   ```
+Frontend runs at: http://localhost:3000
 
-5. **Start the backend:**
+---
 
-   ```bash
-   flask run
-   flask --app app.py --debug run
-   ```
+### 3. Backend Setup
 
-6. **Access the application:**
+```bash
+cd ../backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+flask db upgrade
+```
 
-   Open your browser and go to http://localhost:3000 to see the application running.
+Run backend:
 
-## Usage
+```bash
+flask run
+# or
+flask --app app.py --debug run
+```
 
-Main Screen: From here, users can choose to identify themselves as emergency personnel or local users to access the corresponding dashboard.
-Emergency Personnel Dashboard: Visualize incidents, available resources, monitor in real-time, and generate reports.
-Local User Dashboard: Access reports and customized settings for local users.
+Backend default: http://localhost:5000
 
-## Contributing
+---
 
-If you wish to contribute to the project, follow these steps:
+## 🚀 Usage
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/new-functionality`).
-3. Make your changes and commit (`git commit -am 'Add new functionality'`).
-4. Push your branch (`git push origin feature/new-functionality`).
-5. Open a Pull Request.
+### Main Screen
+Choose user role:
+- Emergency Personnel → full monitoring dashboard  
+- Local User → reports and basic information  
 
-## Screenshots
+### Emergency Personnel Dashboard
+- Map-based fire monitoring  
+- Drone route analysis  
+- Dataset upload for detection  
+- (Future) Report generation  
+
+### Local User Dashboard
+- View incident summaries  
+- Report history  
+- (Future) Custom alert preferences  
+
+---
+
+## 🖼 Screenshots
+
+Add your images:
+
+```
 
 ### Analysis
 ![Analysis Screenshot](sample_data/analysis.png)
@@ -116,3 +134,28 @@ If you wish to contribute to the project, follow these steps:
 
 ### Virtual Assistant
 ![Virtual Assistant Screenshot](sample_data/virtual_assistant.png)
+```
+
+---
+
+## 🤝 Contributing
+
+1. Fork the repository  
+2. Create a branch:
+```bash
+git checkout -b feature/new-feature
+```
+3. Commit:
+```bash
+git commit -am "Add new functionality"
+```
+4. Push:
+```bash
+git push origin feature/new-feature
+```
+5. Open a Pull Request  
+
+---
+
+## 📝 License
+MIT License  
